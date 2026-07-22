@@ -1,0 +1,122 @@
+{
+  "updatedAt": "2026-06-28T12:42:56.859Z",
+  "createdAt": "2026-06-24T10:46:33.609Z",
+  "id": "leD2OkDH97w7a07y",
+  "name": "DataWF5_binary",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -32
+      ],
+      "id": "f7220f51-4898-4a2a-b51b-90cde942df99",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://dog.ceo/api/breeds/image/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        -32
+      ],
+      "id": "0d32360b-bb9e-4be9-ad59-467551f7d471",
+      "name": "GetDogURL"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "18c044a0-510c-4065-9958-1af1e6287211",
+      "name": "GetDogImage"
+    },
+    {
+      "parameters": {
+        "operation": "rotate",
+        "rotate": 180,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -32
+      ],
+      "id": "d90dac39-b926-4f04-ba8f-903bda27a5c4",
+      "name": "Edit Image"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "GetDogURL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetDogURL": {
+      "main": [
+        [
+          {
+            "node": "GetDogImage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetDogImage": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "6adaf1ec-8f9a-49ed-a96d-aae000790534",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-24T10:46:33.612Z",
+      "createdAt": "2026-06-24T10:46:33.612Z",
+      "role": "workflow:owner",
+      "workflowId": "leD2OkDH97w7a07y",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
