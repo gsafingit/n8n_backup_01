@@ -1,0 +1,207 @@
+{
+  "updatedAt": "2026-07-14T13:58:25.589Z",
+  "createdAt": "2026-07-14T13:27:38.360Z",
+  "id": "KlzdvXbXHh7t2TME",
+  "name": "data table",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -32
+      ],
+      "id": "51feb831-786e-403a-8aff-4ec15cdf37f6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "zE7hdgNPN7vBRo0N",
+          "mode": "list",
+          "cachedResultName": "customers2",
+          "cachedResultUrl": "/projects/7yVA2UbfXRYAJ8zK/datatables/zE7hdgNPN7vBRo0N"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "customerID",
+              "keyValue": "={{ $json.customerID }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "customerID": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "customerID",
+              "displayName": "customerID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "customerCountry",
+              "displayName": "customerCountry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "customerEmail",
+              "displayName": "customerEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "customerSince",
+              "displayName": "customerSince",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "region",
+              "displayName": "region",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subregion",
+              "displayName": "subregion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -288,
+        -32
+      ],
+      "id": "644b2da6-48d2-4d58-abfc-2f7e80cd935f",
+      "name": "Upsert row(s)"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "zE7hdgNPN7vBRo0N",
+          "mode": "list",
+          "cachedResultName": "customers2",
+          "cachedResultUrl": "/projects/7yVA2UbfXRYAJ8zK/datatables/zE7hdgNPN7vBRo0N"
+        },
+        "filters": {
+          "conditions": []
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "da0cdf78-cdd1-474e-8785-5283ba5050b7",
+      "name": "Get row(s)"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Upsert row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert row(s)": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "customerID": 102,
+          "customerCountry": "Indiana",
+          "customerEmail": "customer1@mail.in",
+          "customerSince": "2026-12-09T23:00:00.000Z",
+          "region": null,
+          "subregion": null,
+          "id": 1,
+          "createdAt": "2026-07-14T13:47:09.764Z",
+          "updatedAt": "2026-07-14T13:47:09.764Z"
+        }
+      }
+    ]
+  },
+  "versionId": "4792b42f-29cd-43ba-ba23-1fda2d3f689c",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-14T13:27:38.363Z",
+      "createdAt": "2026-07-14T13:27:38.363Z",
+      "role": "workflow:owner",
+      "workflowId": "KlzdvXbXHh7t2TME",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
