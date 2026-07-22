@@ -1,0 +1,96 @@
+{
+  "updatedAt": "2026-06-28T12:43:16.038Z",
+  "createdAt": "2026-06-24T11:18:15.814Z",
+  "id": "U21p9Zv3Ge2ctiUb",
+  "name": "DataWF7_split",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -32
+      ],
+      "id": "1633a7dc-645b-4835-9f63-4acf9cb15155",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://pokeapi.co/api/v2/pokemon?limit=5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -448,
+        -32
+      ],
+      "id": "8eed0704-ff11-4132-aacb-d41d42494bd7",
+      "name": "GetPokemon"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -32
+      ],
+      "id": "fd9d2e2b-d406-44e3-b098-455131f062b3",
+      "name": "Split Out"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "GetPokemon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetPokemon": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "96871b6b-b3c6-46d5-bcdc-89853769a5ab",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-24T11:18:15.816Z",
+      "createdAt": "2026-06-24T11:18:15.816Z",
+      "role": "workflow:owner",
+      "workflowId": "U21p9Zv3Ge2ctiUb",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
