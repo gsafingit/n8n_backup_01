@@ -1,0 +1,94 @@
+{
+  "updatedAt": "2026-07-20T14:09:32.700Z",
+  "createdAt": "2026-07-20T11:12:43.750Z",
+  "id": "zTUJkFbeULe9QXIi",
+  "name": "n8n Form",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Gary Test Form",
+        "formDescription": "test form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "First Name",
+              "placeholder": "John"
+            },
+            {
+              "fieldLabel": "Last Name",
+              "placeholder": "Doe"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -400,
+        -16
+      ],
+      "id": "1f7abfe8-c312-4618-ab63-82c9db95d1ab",
+      "name": "On form submission",
+      "webhookId": "f50d3520-6475-4a7d-85fc-fff6e8b87fbd"
+    },
+    {
+      "parameters": {
+        "resource": "extraction",
+        "operation": "scrape"
+      },
+      "type": "n8n-nodes-base.airtop",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -16
+      ],
+      "id": "ab698d32-8c1c-4f53-a43a-580a4676df46",
+      "name": "Smart scrape page"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Smart scrape page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "fd4d4974-b490-44ec-8590-7a7e09070333",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-20T11:12:43.754Z",
+      "createdAt": "2026-07-20T11:12:43.754Z",
+      "role": "workflow:owner",
+      "workflowId": "zTUJkFbeULe9QXIi",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
