@@ -1,0 +1,207 @@
+{
+  "updatedAt": "2026-06-27T13:10:15.433Z",
+  "createdAt": "2026-06-25T10:46:31.489Z",
+  "id": "WrT6CQtAhFe4Jdmq",
+  "name": "Monitor Report Errors",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -48
+      ],
+      "id": "7baf3aca-9505-4fb5-977f-df42135e2aeb",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4970619f-e8ba-4581-bb5f-a48d641677e8",
+              "name": "content",
+              "value": "=[94c941de557ed8e767ebf9ee7b65f3ae] Workflow Error Alert - Workflow: {{ $json.workflow.name }} | Error: {{ $json.execution.error.message }} | Last node: {{ $json.execution.lastNodeExecuted }} | Execution URL: {{ $json.execution.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        -48
+      ],
+      "id": "bf3680b6-ade3-4d4e-b113-1d1087135ecb",
+      "name": "BuildErrorMessage"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -48
+      ],
+      "id": "15ee112d-e662-4c32-813d-01e11c22dbd1",
+      "name": "NotifyDiscord",
+      "webhookId": "02473054-3756-431e-8fee-5d9c696d98c6",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "SI4xgqgotmODd9sg",
+          "name": "n8n Quickstart S2 Error Discord Webhook account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "BuildErrorMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BuildErrorMessage": {
+      "main": [
+        [
+          {
+            "node": "NotifyDiscord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "db6af46d-23a3-4233-99b6-a0c01a629cd5",
+  "activeVersionId": "9630a294-27a4-4e42-9871-c1cb9495f8d3",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-25T10:46:31.491Z",
+      "createdAt": "2026-06-25T10:46:31.491Z",
+      "role": "workflow:owner",
+      "workflowId": "WrT6CQtAhFe4Jdmq",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-06-25T11:04:21.000Z",
+    "createdAt": "2026-06-25T11:03:37.159Z",
+    "versionId": "9630a294-27a4-4e42-9871-c1cb9495f8d3",
+    "workflowId": "WrT6CQtAhFe4Jdmq",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -352,
+          -48
+        ],
+        "id": "7baf3aca-9505-4fb5-977f-df42135e2aeb",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4970619f-e8ba-4581-bb5f-a48d641677e8",
+                "name": "content",
+                "value": "=94c941de557ed8e767ebf9ee7b65f3ae Workflow Error Alert - Workflow: {{ $json.workflow.name }} | Error: {{ $json.execution.error.message }} | Last node: {{ $json.execution.lastNodeExecuted }} | Execution URL: {{ $json.execution.url }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -144,
+          -48
+        ],
+        "id": "bf3680b6-ade3-4d4e-b113-1d1087135ecb",
+        "name": "BuildErrorMessage"
+      },
+      {
+        "parameters": {
+          "authentication": "webhook",
+          "content": "={{ $json.content }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          64,
+          -48
+        ],
+        "id": "15ee112d-e662-4c32-813d-01e11c22dbd1",
+        "name": "NotifyDiscord",
+        "webhookId": "02473054-3756-431e-8fee-5d9c696d98c6",
+        "credentials": {
+          "discordWebhookApi": {
+            "id": "SI4xgqgotmODd9sg",
+            "name": "n8n Quickstart S2 Error Discord Webhook account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "BuildErrorMessage",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BuildErrorMessage": {
+        "main": [
+          [
+            {
+              "node": "NotifyDiscord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Garry Sa",
+    "name": "Version 9630a294 20260525",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
