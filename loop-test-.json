@@ -1,0 +1,367 @@
+{
+  "updatedAt": "2026-07-06T12:47:59.231Z",
+  "createdAt": "2026-07-04T10:31:56.647Z",
+  "id": "w33oSjUet6AiPaab",
+  "name": "Loop Test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        192
+      ],
+      "id": "23e0108c-093d-4c67-bb18-e335dfee0445",
+      "name": "ManualTrigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f001",
+              "name": "item_name",
+              "type": "string",
+              "value": "Laptop"
+            },
+            {
+              "id": "f002",
+              "name": "category",
+              "type": "string",
+              "value": "electronics"
+            },
+            {
+              "id": "f003",
+              "name": "price",
+              "type": "number",
+              "value": 899
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1f2c73bf-c095-46e5-a9d7-737d1a58dabd",
+      "name": "Mock Item 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f004",
+              "name": "item_name",
+              "type": "string",
+              "value": "T-Shirt"
+            },
+            {
+              "id": "f005",
+              "name": "category",
+              "type": "string",
+              "value": "clothing"
+            },
+            {
+              "id": "f006",
+              "name": "price",
+              "type": "number",
+              "value": 25
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        192
+      ],
+      "id": "ca0a2898-3779-4fb0-a00b-8d47c63c0ad4",
+      "name": "Mock Item 2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f007",
+              "name": "item_name",
+              "type": "string",
+              "value": "Headphones"
+            },
+            {
+              "id": "f008",
+              "name": "category",
+              "type": "string",
+              "value": "electronics"
+            },
+            {
+              "id": "f009",
+              "name": "price",
+              "type": "number",
+              "value": 150
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        384
+      ],
+      "id": "bc24dcea-144e-4a50-b2ea-25b32dc9a038",
+      "name": "Mock Item 3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        192
+      ],
+      "id": "4e2d6165-c884-4dea-9a6b-7a50e3331e3f",
+      "name": "Merge All Items"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        448,
+        192
+      ],
+      "id": "f18d9a75-1ff1-463b-a415-faed2d385836",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c001",
+              "leftValue": "={{ $json.category }}",
+              "rightValue": "electronics",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        192
+      ],
+      "id": "83040821-bebb-423a-8400-57405dde5eec",
+      "name": "Is Electronics?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f010",
+              "name": "discounted_price",
+              "type": "number",
+              "value": "={{ $json.price * 0.9 }}"
+            },
+            {
+              "id": "f011",
+              "name": "note",
+              "type": "string",
+              "value": "10% electronics discount applied"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        96
+      ],
+      "id": "143deca2-d2db-4802-9f5e-8395898c7cf0",
+      "name": "Apply Discount"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f012",
+              "name": "note",
+              "type": "string",
+              "value": "No discount for this category"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        288
+      ],
+      "id": "54124699-6ba9-4c23-a30a-c6f12d39697a",
+      "name": "No Discount"
+    }
+  ],
+  "connections": {
+    "ManualTrigger": {
+      "main": [
+        [
+          {
+            "node": "Mock Item 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mock Item 2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mock Item 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Item 1": {
+      "main": [
+        [
+          {
+            "node": "Merge All Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Item 2": {
+      "main": [
+        [
+          {
+            "node": "Merge All Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Item 3": {
+      "main": [
+        [
+          {
+            "node": "Merge All Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Is Electronics?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Is Electronics?": {
+      "main": [
+        [
+          {
+            "node": "Apply Discount",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Discount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "Merge All Items": [
+      {
+        "json": {
+          "item_name": "T-Shirt",
+          "category": "electronics",
+          "price": 25
+        }
+      }
+    ]
+  },
+  "versionId": "a140b696-e87e-418a-8443-133bcbf8f0ea",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-04T10:31:56.652Z",
+      "createdAt": "2026-07-04T10:31:56.652Z",
+      "role": "workflow:owner",
+      "workflowId": "w33oSjUet6AiPaab",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
