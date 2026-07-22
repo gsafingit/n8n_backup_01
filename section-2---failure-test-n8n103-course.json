@@ -1,0 +1,312 @@
+{
+  "updatedAt": "2026-07-05T14:06:35.969Z",
+  "createdAt": "2026-07-05T13:13:17.614Z",
+  "id": "jG661DB1me8XJpFZ",
+  "name": "Section 2 - Failure Test",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "course/n8n103/failure-test",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -848,
+        64
+      ],
+      "id": "1177f7a6-0be6-4658-b736-b98e71350459",
+      "name": "TriggerWebhook",
+      "webhookId": "69edeaa9-0d63-4109-bb00-78e143f3f7c6",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "18dZNFyjGYIeZSyZ",
+          "name": "n8n Academy API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://learn.app.n8n.cloud/webhook/course/n8n103/guaranteed-failure",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Assessment-ID",
+              "value": "94c941de557ed8e767ebf9ee7b65f3ae"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -640,
+        64
+      ],
+      "id": "dad240cd-2251-496d-b8f1-f304376a225b",
+      "name": "CallFailingEndpoint",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "18dZNFyjGYIeZSyZ",
+          "name": "n8n Academy API Key"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -432,
+        -32
+      ],
+      "id": "a4f93da7-bbad-4752-ae1c-2072f2910a79",
+      "name": "RespondSuccess"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\"error\" : \"{{ $json.error }}\" ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -432,
+        160
+      ],
+      "id": "c2fe5f47-42e5-4795-8403-6f6cc177e4be",
+      "name": "RespondWithError"
+    },
+    {
+      "parameters": {
+        "content": "# Section 2 - Failure Test\n\nOwned By: Gary Safin\nLast Updated: 20260705\n\nWebhook workflow that intentionally fails to test error workflow\ntriggering. Called by the main Debugging Practice workflow.\n\n## Endpoint\n- GET /webhook/course/n8n103/failure-test\n- Authentication: Header Auth (n8n Academy API Key)\n\n## Flow\n1. TriggerWebhook: Receives incoming request\n2. CallFailingEndpoint: Calls guaranteed-failure endpoint (always 503)\n3. RespondSuccess: Never reached (success path)\n4. RespondWithError: Returns error response\n\n## Error Configuration\n- CallFailingEndpoint uses \"Continue (using error output)\"\n- Error Workflow linked to Section 2 - Error Handler\n\n## Requirements\n- Must be published for production execution\n- Must have Error Workflow configured in settings\n\nPart of: n8n Foundations Program, N8N103 Course, Section 2",
+        "height": 480,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -224
+      ],
+      "id": "4ef592b7-3189-4597-87d2-e5be5d81ecb3",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "TriggerWebhook": {
+      "main": [
+        [
+          {
+            "node": "CallFailingEndpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CallFailingEndpoint": {
+      "main": [
+        [
+          {
+            "node": "RespondSuccess",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RespondWithError",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "7hBSSaVNuCWVqrlm",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "ceeed123-1a56-4f7a-a4af-3c3dc3367caa",
+  "activeVersionId": "920ff85b-974d-4517-bd4c-64acaa0c0306",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-07-05T13:13:17.617Z",
+      "createdAt": "2026-07-05T13:13:17.617Z",
+      "role": "workflow:owner",
+      "workflowId": "jG661DB1me8XJpFZ",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-07-05T13:36:34.000Z",
+    "createdAt": "2026-07-05T13:34:34.409Z",
+    "versionId": "920ff85b-974d-4517-bd4c-64acaa0c0306",
+    "workflowId": "jG661DB1me8XJpFZ",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "course/n8n103/failure-test",
+          "authentication": "headerAuth",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -416,
+          0
+        ],
+        "id": "1177f7a6-0be6-4658-b736-b98e71350459",
+        "name": "TriggerWebhook",
+        "webhookId": "69edeaa9-0d63-4109-bb00-78e143f3f7c6",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "18dZNFyjGYIeZSyZ",
+            "name": "n8n Academy API Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://learn.app.n8n.cloud/webhook/course/n8n103/guaranteed-failure",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-Assessment-ID",
+                "value": "94c941de557ed8e767ebf9ee7b65f3ae"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.4,
+        "position": [
+          -208,
+          0
+        ],
+        "id": "dad240cd-2251-496d-b8f1-f304376a225b",
+        "name": "CallFailingEndpoint",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "18dZNFyjGYIeZSyZ",
+            "name": "n8n Academy API Key"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          0,
+          -96
+        ],
+        "id": "a4f93da7-bbad-4752-ae1c-2072f2910a79",
+        "name": "RespondSuccess"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "=\"error\" : {{ $json.error }}\"",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          0,
+          96
+        ],
+        "id": "c2fe5f47-42e5-4795-8403-6f6cc177e4be",
+        "name": "RespondWithError"
+      }
+    ],
+    "connections": {
+      "TriggerWebhook": {
+        "main": [
+          [
+            {
+              "node": "CallFailingEndpoint",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CallFailingEndpoint": {
+        "main": [
+          [
+            {
+              "node": "RespondSuccess",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "RespondWithError",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Garry Sa",
+    "name": "Version 920ff85b",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-07-03T12:24:00.721Z",
+      "createdAt": "2026-07-03T12:24:00.721Z",
+      "id": "WUrmOVJN8imPjuym",
+      "name": "n8n103-course"
+    }
+  ]
+}
