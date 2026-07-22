@@ -1,0 +1,113 @@
+{
+  "updatedAt": "2026-07-03T13:26:32.206Z",
+  "createdAt": "2026-06-28T19:14:04.537Z",
+  "id": "J6fVbfXn7eg7ry7P",
+  "name": "TranslationChatbot",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c95f8c31-7208-4404-afa9-1ecde7dbe8c9",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -384,
+        -80
+      ],
+      "webhookId": "23c43aa2-3ed0-429a-a498-3647f522d4ef"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an Albanian translation assistant. Your sole purpose is to translate any text provided by the user into Albanian.\n\nRules:\n- Always respond with only the Albanian translation of the provided text, nothing else.\n- Do not add explanations, commentary, greetings, or any extra text.\n- If the input is already in Tatar, return it as-is without any changes or notes.\n- Preserve the original formatting, tone, and punctuation as closely as possible in the translation.\n- If the input contains untranslatable elements such as proper nouns, brand names, or code, keep them as-is within the translation."
+        }
+      },
+      "id": "eb724c2e-24ce-4b9b-b10f-617c2fb30cc1",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -176,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "id": "c27cb7ea-b1be-42e8-9dcc-6f41508695df",
+      "name": "Anthropic Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        112
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "GuOSHrDEwMmzyXl7",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "ba39b8df-2811-4edc-988b-21ad7841dea7",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-28T19:14:04.541Z",
+      "createdAt": "2026-06-28T19:14:04.541Z",
+      "role": "workflow:owner",
+      "workflowId": "J6fVbfXn7eg7ry7P",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
