@@ -1,0 +1,336 @@
+{
+  "updatedAt": "2026-07-04T10:08:50.538Z",
+  "createdAt": "2026-07-04T10:04:47.151Z",
+  "id": "3DUGhnE8qR89hePo",
+  "name": "Mocking 3 API Total",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        112
+      ],
+      "id": "5c38ab99-5135-4c45-bfa7-665d6dd31cb8",
+      "name": "ManualTrigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f001",
+              "name": "status",
+              "type": "number",
+              "value": 200
+            },
+            {
+              "id": "f002",
+              "name": "order_total",
+              "type": "number",
+              "value": 75
+            },
+            {
+              "id": "f003",
+              "name": "customer_email",
+              "type": "string",
+              "value": "alice@example.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -432,
+        112
+      ],
+      "id": "562a1f5c-840c-450b-9cf6-9c54870d2f9a",
+      "name": "Mock API Response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c001",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        112
+      ],
+      "id": "cea3bcd9-23d4-4db2-a759-af45a8de0bf6",
+      "name": "Check Status"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f004",
+              "name": "result",
+              "type": "string",
+              "value": "Order processed successfully"
+            },
+            {
+              "id": "f005",
+              "name": "notify_email",
+              "type": "string",
+              "value": "={{ $json.customer_email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8b38c42e-98c6-4c50-8eb3-847e616725ec",
+      "name": "Handle Success"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f006",
+              "name": "result",
+              "type": "string",
+              "value": "API returned an error"
+            },
+            {
+              "id": "f007",
+              "name": "error_status",
+              "type": "number",
+              "value": "={{ $json.status }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        208
+      ],
+      "id": "3bd9fa84-a081-41ae-95b5-09f032038483",
+      "name": "Handle Failure"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c001",
+              "leftValue": "={{ $json.order_total }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        400
+      ],
+      "id": "7f15bbf9-0995-4e45-9b4f-b40c54f2ccdd",
+      "name": "Check Total"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f004",
+              "name": "result",
+              "type": "string",
+              "value": "Order processed successfully"
+            },
+            {
+              "id": "f005",
+              "name": "notify_email",
+              "type": "string",
+              "value": "={{ $json.customer_email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        352
+      ],
+      "id": "1013eeb0-ccd8-4670-8a11-fa4c31e616dc",
+      "name": "Free Shipping"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f006",
+              "name": "result",
+              "type": "string",
+              "value": "API returned an error"
+            },
+            {
+              "id": "f007",
+              "name": "error_status",
+              "type": "number",
+              "value": "={{ $json.status }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        496
+      ],
+      "id": "0f87e4c9-908d-4d4e-830b-7fc3cd4570ae",
+      "name": "Regular Shipping"
+    }
+  ],
+  "connections": {
+    "ManualTrigger": {
+      "main": [
+        [
+          {
+            "node": "Mock API Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock API Response": {
+      "main": [
+        [
+          {
+            "node": "Check Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Status": {
+      "main": [
+        [
+          {
+            "node": "Handle Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Total": {
+      "main": [
+        [
+          {
+            "node": "Free Shipping",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Regular Shipping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "Mock API Response": [
+      {
+        "json": {
+          "status": 200,
+          "order_total": 40,
+          "customer_email": "alice@example.com"
+        }
+      }
+    ]
+  },
+  "versionId": "676a1e28-bd96-49bc-a6e8-0cb4260ecdc3",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-04T10:04:47.154Z",
+      "createdAt": "2026-07-04T10:04:47.154Z",
+      "role": "workflow:owner",
+      "workflowId": "3DUGhnE8qR89hePo",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
