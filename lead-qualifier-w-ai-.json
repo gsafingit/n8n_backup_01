@@ -1,0 +1,498 @@
+{
+  "updatedAt": "2026-07-20T13:49:01.908Z",
+  "createdAt": "2026-07-20T11:27:30.447Z",
+  "id": "oQ1ngEISB5u1eho2",
+  "name": "Lead Qualifier w AI",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Work with VKZ Automations",
+        "formDescription": "Provide your details below and we'll be in touch.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Website",
+              "placeholder": "https://...",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Your Email Address",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "How would you like us to help you?",
+              "fieldType": "textarea",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -1120,
+        304
+      ],
+      "id": "6aed5a83-d877-48a5-a5dd-fd7b7e64c61a",
+      "name": "On form submission",
+      "webhookId": "66d770f8-cf9b-4040-9ce1-dda249ea68ba"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -832,
+        512
+      ],
+      "id": "563ca84e-7d25-4b4c-819a-22e36b47d45d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ryakd5x2Cf67odb1",
+          "name": "OpenAI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Form Submission\n**Prospect submits form with their details.**",
+        "height": 304,
+        "width": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1168,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "77e65cf5-8ab8-4efe-b787-c3ec107b74ca",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "thebeetrootcompany@gmail.com",
+        "subject": "New SaaS Lead!",
+        "emailType": "text",
+        "message": "=Hi Team,\n\nTIME TO ACT!\n\nNEW SaaS LEAD!!!\n\nSee details below - \n\nName - {{ $('On form submission').item.json['Full Name'] }}\nCompany - {{ $('On form submission').item.json.Company }}\nCompany Website - {{ $('On form submission').item.json['Company Website'] }}\nEmail Address - {{ $('On form submission').item.json['Your Email Address'] }}\nRequest - {{ $('On form submission').item.json['How would you like us to help you?'] }}\n\nAI Sales Summary - {{ $json.salesSummary }}\n\nBest Regards\nPankaj Pahuja",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        112
+      ],
+      "id": "98416acd-291e-4547-b8a8-9917ac2f1721",
+      "name": "Email SaaS Team ",
+      "webhookId": "dbb6d229-0e72-4842-a685-7d4a812477a9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CdbfPq10aTpOov7n",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Your Email Address'] }}",
+        "subject": "Thanks for your Interest",
+        "emailType": "text",
+        "message": "=Hi {{ $('On form submission').item.json['Full Name'] }},\n\nThanks for your interest in VKZ Recruitment services! AS we specialze in recruitment for software businesses such as SaaS and development agencies, we're not a good fit for you based on your company's industry.\n\nPlease let me know if you'd like us to connect you with one of our partners who specialzies in dealing with your needs.  \n\nCheers,\n\nHuge Jackman\nHead of Sales,\nVKZ Recruits\nDallas, TX",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        640
+      ],
+      "id": "4203de4b-2a36-4de2-ae57-9e89d746b053",
+      "name": "Rejection Email",
+      "webhookId": "b09f7917-22c1-483a-8d5d-0fbbebebb832"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Form submission data - Full Name: {{ $json['Full Name'] }}, Company: {{ $json.Company }}, Company Website: {{ $json['Company Website'] }}, Email: {{ $json['Your Email Address'] }}, Request: {{ $json['How would you like us to help you?'] }}. Please use the Website Scraper Tool to research the company website and gather information about their business, then analyze all the data to qualify this lead.",
+        "options": {
+          "systemMessage": "You are a Lead Qualification Agent for VKZ Recruits, a recruitment firm specialising in IT, software, AI, automation, and technical talent.\n\nYour job is to analyse the provided company and contact data and return a STRICT JSON response for use in an automation workflow and by a sales team.\n\nCRITICAL RULES:\n- Return ONLY valid JSON\n- No markdown, no bullet points, no extra text\n- All fields must be top-level JSON properties\n- Use only the data provided\n- If information is missing, make a conservative judgement\n\nCOMPANY TYPE RULES:\n- \"saas\": The company sells a proprietary software product or platform.\n- \"agency\": The company provides services such as software development, AI consulting, automation, agent or chatbot development, or technical consulting.\n- \"unknown\": Use only if there is insufficient information.\n\nDEFAULT:\nIf the company provides AI, software, automation, or consulting services and does not clearly sell a standalone product, classify as \"agency\".\n\nLEAD SCORING (1–10):\nScore the lead based on overall fit and potential for technical recruitment.\n- 1–3: Poor fit or very early\n- 4–6: Good fit but no clear urgency\n- 7–10: Strong fit with clear potential or urgency\n\nLEAD CATEGORY:\n- Cold: 1–3\n- Warm: 4–6\n- Hot: 7–10\n\nQUALIFICATION RULE:\nisQualified = true ONLY if:\n- companyType is \"saas\" or \"agency\"\n\nOUTPUT JSON (MUST MATCH EXACTLY):\n\n{\n  \"isQualified\": boolean,\n  \"companyType\": \"saas\" | \"agency\" | \"unknown\",\n  \"leadScore\": number,\n  \"leadCategory\": \"Cold\" | \"Warm\" | \"Hot\",\n  \"salesSummary\": string\n}\n\nSTEPS:\n1. Use the Website Scraper Tool to research the company website provided in the form submission\n2. Analyze the scraped data along with the form submission information\n3. Classify the company type and qualify the lead\n4. Return the JSON response"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -832,
+        304
+      ],
+      "id": "728afcf6-1989-44de-a421-a4ce86775c18",
+      "name": "AI Agent",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "sendTo": "thebeetrootcompany@gmail.com",
+        "subject": "New Agency Lead",
+        "emailType": "text",
+        "message": "=Hi Team,\n\nTIME TO ACT!\n\nNEW AGENCY LEAD!!!\n\nSee details below - \n\nName - {{ $('On form submission').item.json['Full Name'] }}\nCompany - {{ $('On form submission').item.json.Company }}\nCompany Website - {{ $('On form submission').item.json['Company Website'] }}\nEmail Address - {{ $('On form submission').item.json['Your Email Address'] }}\nRequest - {{ $('On form submission').item.json['How would you like us to help you?'] }}\n\nAI Sales Summary - {{ $json.salesSummary }}\n\nBest Regards\nPankaj Pahuja\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        304
+      ],
+      "id": "d328c3b1-1c37-4ce8-8fdb-cd4567d94941",
+      "name": "Email Agency Team",
+      "webhookId": "1366f1a1-204a-45e3-91f2-a470e96ef83f"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent\n**AI Agent uses the Airtop Tool to scrape company website data for lead qualification.**",
+        "height": 512,
+        "width": 400,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -912,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "61c72c9f-19b1-48dd-8840-1b033baa5776",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Saas vs Agency\n**The classifier analyses the data, determines whether the lead is a SaaS company or an agency, and sends the email to the appropriate team.**\n",
+        "height": 464,
+        "width": 496,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "787f2390-72cd-47ed-b4b6-c9ffea150a02",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Rejection Email\n**Sends a rejection email to prospects who are not a fit for our company.**",
+        "height": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -80,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "b7e7f8a9-d303-4e33-9043-f3ef790962be",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Head Qualifier \n**Decides whether the lead is a good fit for our company. If not, a rejection email is sent.**\n",
+        "height": 288,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -256,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "141d41a3-6e1d-4b81-8776-833cd0443ac2",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d36b61eb-233f-40f4-8a2c-6a19f8a8352c",
+              "name": "isQualified",
+              "value": "={{ JSON.parse($json.output).isQualified }}",
+              "type": "boolean"
+            },
+            {
+              "id": "e0c90a3a-a9b4-4ab5-a261-8586194db1d5",
+              "name": "companyType",
+              "value": "={{ JSON.parse($json.output).companyType }}",
+              "type": "string"
+            },
+            {
+              "id": "ff28f5c0-5577-46c6-a274-c9c9cc4cc867",
+              "name": "leadScore",
+              "value": "={{ JSON.parse($json.output).leadScore }}",
+              "type": "number"
+            },
+            {
+              "id": "5583c1c9-7e87-45ff-8eb7-42547f39ef2e",
+              "name": "leadCategory",
+              "value": "={{ JSON.parse($json.output).leadCategory }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -432,
+        304
+      ],
+      "id": "d5b5a800-a309-466e-986c-d4758bb1612d",
+      "name": "Data Cleanup"
+    },
+    {
+      "parameters": {
+        "content": "## Data Cleanup \n**Cleans the AI output and prepares it for the next decision steps.**",
+        "height": 288,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "b91dd858-b102-4c02-ba86-7153359a1872",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "resource": "extraction",
+        "operation": "scrape",
+        "sessionMode": "new",
+        "url": "={{ $fromAI('website_url', 'The company website URL to scrape', 'string') }}"
+      },
+      "id": "87095075-8c7a-4547-936c-ed6021a76cb3",
+      "name": "Website Scraper Tool",
+      "type": "n8n-nodes-base.airtopTool",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "423b07f3-9d95-411f-86a3-e3f2f9bfeec0",
+              "leftValue": "={{ $('Data Cleanup').item.json.companyType }}",
+              "rightValue": "saas",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        208
+      ],
+      "id": "9360fe56-e293-4705-8f1d-01345e5cac59",
+      "name": "SaaS vs Agency"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "94c4175e-b9f0-4a92-8359-0122c89a5759",
+              "leftValue": "={{ $json.isQualified }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "837722ca-0e60-4b41-9800-aeacf9cf7c91",
+              "leftValue": "={{ $json.leadScore }}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -208,
+        304
+      ],
+      "id": "2d4e33f2-d3ba-43cf-80e1-4e16db2cbcb8",
+      "name": "Qualifier"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Data Cleanup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Cleanup": {
+      "main": [
+        [
+          {
+            "node": "Qualifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Scraper Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SaaS vs Agency": {
+      "main": [
+        [
+          {
+            "node": "Email SaaS Team ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Agency Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualifier": {
+      "main": [
+        [
+          {
+            "node": "SaaS vs Agency",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rejection Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "1af8817b-8ab1-4abb-8d3a-ea39df8efd45",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-20T11:27:30.450Z",
+      "createdAt": "2026-07-20T11:27:30.450Z",
+      "role": "workflow:owner",
+      "workflowId": "oQ1ngEISB5u1eho2",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
