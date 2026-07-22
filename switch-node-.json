@@ -1,0 +1,320 @@
+{
+  "updatedAt": "2026-07-10T13:24:25.692Z",
+  "createdAt": "2026-07-10T13:06:29.333Z",
+  "id": "3Lwq8cHY1ksJhhTE",
+  "name": "Switch Node",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2ec529c6-7f33-46ab-928e-2e0d71f63227",
+      "name": "TriggerManual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -672,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "options": {}
+      },
+      "id": "eefb0b60-ed8b-42f0-a9c6-6a6a89cf6f7b",
+      "name": "GetOrders",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -448,
+        288
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "pending"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pending"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "shipped"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Shipped"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "cancelled"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cancelled"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "ef0f99bd-c2c7-4b1a-8a4e-667e07f488a4",
+      "name": "RouteByStatus",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -224,
+        256
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "816a8a9a-d18f-4575-817b-195ef4db9666",
+      "name": "ProcessPending",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b75fd9df-852b-47c5-b74b-a65e46a23ad5",
+      "name": "NotifyShipped",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        192
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "8fc7b6e0-7569-4b9d-bb30-95463d78cf6a",
+      "name": "HandleCancelled",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        384
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "34055bc0-1fda-4908-a4a5-2827d97669f1",
+      "name": "HandleUnknownStatus",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        576
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.total > 200 ? 0: 1  }}"
+      },
+      "id": "05f4a91d-9d86-4348-a248-08b3d2461ab2",
+      "name": "SwExpressionBased",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -448,
+        592
+      ],
+      "typeVersion": 3.2
+    }
+  ],
+  "connections": {
+    "TriggerManual": {
+      "main": [
+        [
+          {
+            "node": "GetOrders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetOrders": {
+      "main": [
+        [
+          {
+            "node": "RouteByStatus",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "SwExpressionBased",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RouteByStatus": {
+      "main": [
+        [
+          {
+            "node": "ProcessPending",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NotifyShipped",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HandleCancelled",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HandleUnknownStatus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "GetOrders": [
+      {
+        "json": {
+          "order_id": "ORD-001",
+          "customer": "Acme Corp",
+          "total": 250,
+          "status": "pending"
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-002",
+          "customer": "Globex Inc",
+          "total": 45,
+          "status": "shipped"
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-003",
+          "customer": "Initech",
+          "total": 180,
+          "status": "cancelled"
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-004",
+          "customer": "Umbrella Ltd",
+          "total": 320,
+          "status": "pending"
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-005",
+          "customer": "Stark Industries",
+          "total": 75,
+          "status": "returned"
+        }
+      }
+    ]
+  },
+  "versionId": "74ad6d86-32d5-445d-9635-23a67ca3d74c",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-10T13:06:29.335Z",
+      "createdAt": "2026-07-10T13:06:29.335Z",
+      "role": "workflow:owner",
+      "workflowId": "3Lwq8cHY1ksJhhTE",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
