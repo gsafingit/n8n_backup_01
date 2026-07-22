@@ -1,0 +1,204 @@
+{
+  "updatedAt": "2026-06-28T12:42:51.915Z",
+  "createdAt": "2026-06-24T10:31:11.393Z",
+  "id": "gGuYzSRDRm69AwFt",
+  "name": "DataWF4_datetime",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -48
+      ],
+      "id": "a643a3ab-2863-4f23-b17a-b0b0711e9dd2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAllPeople",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.n8nTrainingCustomerDatastore",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -48
+      ],
+      "id": "198c57d3-897b-4c20-8b3d-11cae391872b",
+      "name": "GetCustomerData"
+    },
+    {
+      "parameters": {
+        "operation": "roundDate",
+        "date": "={{$json.created}}",
+        "mode": "roundUp",
+        "outputFieldName": "newDate",
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        -48
+      ],
+      "id": "caa47507-ff7f-4982-a835-2ab07bd21085",
+      "name": "RoundDate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "91c9843c-697d-4067-b11b-5ce02242807f",
+              "leftValue": "={{ $json.newDate }}",
+              "rightValue": "1960-01-01T00:00:00",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        176,
+        -48
+      ],
+      "id": "d3792025-ee0d-4b74-b23b-a44d1b95baeb",
+      "name": "CheckAfter1960"
+    },
+    {
+      "parameters": {
+        "operation": "addToDate",
+        "magnitude": "={{ $json.newDate }}",
+        "duration": 5,
+        "outputFieldName": "plus5Days",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -144
+      ],
+      "id": "61bd5c2c-eadb-4eda-992a-ea073022dcaf",
+      "name": "Add5days"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fd56ae54-5bd4-4208-864a-21502b0c4a79",
+              "name": "newYear",
+              "value": "={{ $json.newDate.toDateTime().plus(20,'years') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        48
+      ],
+      "id": "169a4115-7b72-4736-9fe6-6aae4d2c410e",
+      "name": "Add20Years"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "GetCustomerData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetCustomerData": {
+      "main": [
+        [
+          {
+            "node": "RoundDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RoundDate": {
+      "main": [
+        [
+          {
+            "node": "CheckAfter1960",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckAfter1960": {
+      "main": [
+        [
+          {
+            "node": "Add5days",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add20Years",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "b192cd9a-11ca-4a69-8662-1a3ebaa84425",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-24T10:31:11.395Z",
+      "createdAt": "2026-06-24T10:31:11.395Z",
+      "role": "workflow:owner",
+      "workflowId": "gGuYzSRDRm69AwFt",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
