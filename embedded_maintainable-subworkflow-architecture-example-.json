@@ -1,0 +1,1019 @@
+{
+  "updatedAt": "2026-07-06T10:50:38.000Z",
+  "createdAt": "2026-07-06T10:50:38.227Z",
+  "id": "niNbk7JkY8a1vIuu",
+  "name": "Embedded_Maintainable Subworkflow architecture example",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $('SET instance_url').item.json.instance_url }}/api/v1/workflows/{{ $json.id }}/tags",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.tags }}",
+        "options": {}
+      },
+      "id": "f6cd1dc0-ebb4-4d10-949b-536e631be65c",
+      "name": "Update workflow tags",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        256,
+        1104
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "470ad54e-9e25-4fa9-b54c-d073fa7a60c7",
+      "name": "GET all workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        -1936,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflows = $input.all();\nconst dependencyGraph = {};\n\n// Helper function to initialize a workflow entry\nconst getOrCreateWorkflowEntry = (id, name, tags) => {\n  if (!dependencyGraph[id]) {\n    dependencyGraph[id] = { id, name, callers: [], tags };\n  }\n  return dependencyGraph[id];\n};\n\n// Build lookup tables for workflow names and tags\nconst workflowNameMap = {};\nconst workflowTagsMap = {};\n\nworkflows.forEach(item => {\n  workflowNameMap[item.json.id] = item.json.name;\n  workflowTagsMap[item.json.id] = item.json.tags || [];\n});\n\n// Process each workflow\nworkflows.forEach(item => {\n  const { id: workflowId, name: workflowName, nodes = [], tags = [] } = item.json;\n  \n  // Ensure the workflow itself exists in the output, with its own tags\n  getOrCreateWorkflowEntry(workflowId, workflowName, tags);\n\n  // Process nodes that execute workflows\n  nodes.forEach(({ type, parameters }) => {\n    if (\n      type !== 'n8n-nodes-base.executeWorkflow' &&\n      type !== '@n8n/n8n-nodes-langchain.toolWorkflow'\n    ) return;\n\n    let subWorkflowId = parameters?.workflowId?.value || parameters?.workflowId;\n    if (subWorkflowId === \"={{ $workflow.id }}\") subWorkflowId = workflowId; // Handle self-referencing\n\n    if (subWorkflowId) {\n      const subWorkflowName = workflowNameMap[subWorkflowId] || \"Unknown Workflow\"; // Lookup name\n      const subWorkflowTags = workflowTagsMap[subWorkflowId] || []; // Lookup correct tags\n\n      const entry = getOrCreateWorkflowEntry(subWorkflowId, subWorkflowName, subWorkflowTags);\n\n      if (!entry.callers.includes(workflowId)) {\n        entry.callers.push(workflowId);\n      }\n    }\n  });\n});\n\n// Convert to an array format\nreturn Object.values(dependencyGraph);"
+      },
+      "id": "df934e08-f500-43cf-8389-e276c787a42b",
+      "name": "List callers of subworkflows",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1744,
+        352
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "a1ccd5c3-ee85-412b-ac36-b68f9d2bc904",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              },
+              "leftValue": "={{ $json.callers.length }}",
+              "rightValue": 0
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "40a5836f-57dd-4a8e-96ee-dc8fb69dd735",
+      "name": "Exclude uncalled workflows",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        -1536,
+        352
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "d12ad828-2f0c-4e2d-a6d5-de28007253cf",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.hasField(\"error\") }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "875f1efc-f5ef-4343-bd29-9960866a6ac7",
+      "name": "Exclude missing workflows",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        -1136,
+        352
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks"
+            }
+          ]
+        }
+      },
+      "id": "c60fa998-014b-4d29-b6ab-635b7ce95814",
+      "name": "And every Sunday",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -2176,
+        512
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "events": [
+          "activate"
+        ]
+      },
+      "id": "f481ce41-f3f0-4594-b344-8c08a3f2a271",
+      "name": "When this workflow is activated",
+      "type": "n8n-nodes-base.n8nTrigger",
+      "position": [
+        -2176,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "e3a85d09-2859-4318-97c6-3258c054e9ef",
+      "name": "GET workflow(s)",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        -1344,
+        352
+      ],
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34f1dd94-28dc-4105-8e81-8fcf2672e631",
+              "name": "id",
+              "type": "string",
+              "value": "={{ $('Exclude uncalled workflows').item.json.id }}"
+            },
+            {
+              "id": "809b0f5d-4a4f-470c-a514-1e2dc7df92c4",
+              "name": "name",
+              "type": "string",
+              "value": "={{ $('Exclude uncalled workflows').item.json.name }}"
+            },
+            {
+              "id": "422ef66d-c26a-454c-85fd-856fca668782",
+              "name": "callers",
+              "type": "array",
+              "value": "={{ $('Exclude uncalled workflows').item.json.callers }}"
+            },
+            {
+              "id": "3353b704-871b-4b22-95c2-2e6fd5bb1df3",
+              "name": "callers_count",
+              "type": "number",
+              "value": "={{ $('Exclude uncalled workflows').item.json.callers.length }}"
+            },
+            {
+              "id": "b23ab78d-2136-4cc3-9b9a-1b5ed89d1e28",
+              "name": "new_callers",
+              "type": "array",
+              "value": "={{ $('Exclude uncalled workflows').item.json.callers.difference($('Exclude uncalled workflows').item.json.tags.map(item => item.name)) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1e396b9-8a44-4a19-8348-44c2a55d7129",
+      "name": "Count callers and identify new callers",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -944,
+        352
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b589ba72-c98d-45ff-a4df-5be7cf788e1b",
+      "name": "Loop through workflows",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -704,
+        352
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.instance_url }}/api/v1/tags",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "options": {}
+      },
+      "id": "7312fb5f-2dae-4b1b-a664-75c6389c3cd7",
+      "name": "GET all tags",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -144,
+        576
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b40958a-6ab4-4e35-9aee-1d1346dfe8a6",
+              "name": "id",
+              "type": "string",
+              "value": "={{ $('SET instance_url').item.json.id }}"
+            },
+            {
+              "id": "95c97ab8-2945-4818-9a10-1ed1b69369bb",
+              "name": "name",
+              "type": "string",
+              "value": "={{ $('SET instance_url').item.json.name }}"
+            },
+            {
+              "id": "2ed9bf03-2b09-43e1-8cb5-5e6e3c9c9e99",
+              "name": "callers",
+              "type": "array",
+              "value": "={{ $('SET instance_url').item.json.callers }}"
+            },
+            {
+              "id": "3477c08a-7c35-4c0e-85bb-67144e12bff0",
+              "name": "callers_count",
+              "type": "number",
+              "value": "={{ $('SET instance_url').item.json.callers_count }}"
+            },
+            {
+              "id": "f816907e-f679-4573-a14b-2dce6ef69eb1",
+              "name": "new_callers",
+              "type": "array",
+              "value": "={{ $('SET instance_url').item.json.new_callers.difference($json.data.map(item => item.name)) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1fb9dcac-3a0f-4fd2-8134-34eeb02970f0",
+      "name": "Remove existing tags from new_callers list",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        576
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "42126431-2ae2-4265-aa4d-0d3e77a730b3",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.new_callers }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "54752fc9-da28-427f-8389-19a3559bf26c",
+      "name": "If any new callers",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -336,
+        912
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "new_callers",
+        "options": {
+          "destinationFieldName": "new_tag_name"
+        }
+      },
+      "id": "378db461-2b37-4601-8c78-097f39f53811",
+      "name": "Split out new callers as new tags",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -144,
+        800
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('SET instance_url').item.json.instance_url }}/api/v1/tags",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.new_tag_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f4f7a6f-eeb3-4c1a-8a49-6e0f7b3fcd9f",
+      "name": "Create new tags",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        64,
+        800
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "return $('SET instance_url').all();"
+      },
+      "id": "906a5bc6-f52e-49a4-911b-69e6407ad561",
+      "name": "Return original pass through values",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        256,
+        800
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "id": "8c9ff268-4eb2-47a7-9bba-3992c3aa2fe0",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        464,
+        912
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "={{ $('SET instance_url').item.json.instance_url }}/api/v1/tags",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "options": {}
+      },
+      "id": "c0b690e3-7a23-4fd3-8b80-3c9042d47358",
+      "name": "GET all tags again",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -336,
+        1104
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b5f7ba8d-1b94-4cae-a0d1-f2f14c7cb5a3",
+              "name": "tags",
+              "type": "object",
+              "value": "={{ $json.data.reduce((acc, { id, name }) => ({ ...acc, [id]: name }), {}) }}"
+            },
+            {
+              "id": "23a993a4-26e1-474a-9f0a-cedc9792a2f2",
+              "name": "callers",
+              "type": "array",
+              "value": "={{ $('Merge').item.json.callers }}"
+            },
+            {
+              "id": "0d451e74-d701-4ddb-b11c-8d5aa3efdde6",
+              "name": "id",
+              "type": "string",
+              "value": "={{ $('Merge').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8b935403-1937-4106-86a7-38d6c23edfe4",
+      "name": "Create tag id:name dictionary",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -144,
+        1104
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "762920de-98a6-4027-8e39-1244042f52e1",
+              "name": "tags",
+              "type": "array",
+              "value": "={{ [$json].flatMap(item => item.callers.map(id => ({ id: Object.keys(item.tags).find(key => item.tags[key] === id) }))).filter(item => item.id); }}"
+            },
+            {
+              "id": "1ff05b15-343a-49da-a70d-92c3a5d19011",
+              "name": "id",
+              "type": "string",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "id": "f1afee56-a17f-422b-aabe-e59126efbb8e",
+              "name": "callers",
+              "type": "array",
+              "value": "={{ $json.callers }}"
+            },
+            {
+              "id": "39a0887c-8863-4968-9015-3add683eecd7",
+              "name": "name",
+              "type": "string",
+              "value": "={{ $('Merge').item.json.name }}"
+            },
+            {
+              "id": "4ae3b23c-1faf-4426-8e2e-5254a32d458b",
+              "name": "callers_count",
+              "type": "number",
+              "value": "={{ $('Merge').item.json.callers_count }}"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "selected",
+        "options": {}
+      },
+      "id": "c0ab3661-09e7-4b94-8209-a349dffff0dc",
+      "name": "Retrieve tag ids and names from dictionary",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        1104
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eda3be17-95a6-457f-b620-459cf11c9aee",
+              "name": "id",
+              "type": "string",
+              "value": "={{ $('Retrieve tag ids and names from dictionary').item.json.id }}"
+            },
+            {
+              "id": "02b79f2a-b128-4686-8bb2-78ff44c43698",
+              "name": "callers",
+              "type": "array",
+              "value": "={{ $('Retrieve tag ids and names from dictionary').item.json.callers }}"
+            },
+            {
+              "id": "816163c9-7a5c-445d-8b59-592af7c2a4ac",
+              "name": "name",
+              "type": "string",
+              "value": "={{ $('Retrieve tag ids and names from dictionary').item.json.name }}"
+            },
+            {
+              "id": "c860552e-70d0-4d61-9b9d-ccff690b703b",
+              "name": "callers_count",
+              "type": "number",
+              "value": "={{ $('Retrieve tag ids and names from dictionary').item.json.callers_count }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c01ffb62-fb0c-41ce-b849-c61547b334c5",
+      "name": "Return dependency graph data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        1104
+      ],
+      "executeOnce": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "name"
+            },
+            {
+              "fieldToAggregate": "id"
+            },
+            {
+              "fieldToAggregate": "callers_count"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4bbca8af-2cff-4bb5-a62d-9acf0fc87f79",
+      "name": "Combine dependency graph values into labels",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        -336,
+        336
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chartType": "pie",
+        "labelsMode": "array",
+        "labelsArray": "={{ $json.name }}",
+        "data": "={{ $json.callers_count }}",
+        "chartOptions": {
+          "backgroundColor": "#ffffff",
+          "format": "png",
+          "height": 600,
+          "width": 600
+        },
+        "datasetOptions": {
+          "borderColor": "#000"
+        }
+      },
+      "id": "4faabf80-55a9-4fb3-9a85-6b5ec5253f8c",
+      "name": "Visualize subworkflow dependency graph",
+      "type": "n8n-nodes-base.quickChart",
+      "position": [
+        64,
+        336
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Generate chart",
+        "height": 243.8281544043028,
+        "width": 502.4185703091201,
+        "color": 6
+      },
+      "id": "89301473-8668-402e-88c5-2b4791f57845",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        272
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3bfad885-f167-47fa-a615-da3661c60d85",
+              "name": "instance_url",
+              "type": "string",
+              "value": "https://n8n.example.com"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "b852058a-e301-43a0-b41d-295100eaa42c",
+      "name": "SET instance_url",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -336,
+        576
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "path": "dependency-graph",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2e615e9f-6400-433a-bcb9-cb52093e1013",
+      "name": "When viewed in a browser",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -2176,
+        192
+      ],
+      "webhookId": "9ef127d4-bd1e-40db-999b-0881afbd2ab3",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## Generate dependency graph",
+        "height": 243.8281544043028,
+        "width": 502.4185703091201,
+        "color": 6
+      },
+      "id": "425785c9-858e-4182-a753-248255c6158c",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assuming the incoming JSON data looks like this:\nconst workflows = $input.all(); // The input data passed to the Code Node\n\n// Function to build the Mermaid chart\nconst buildMermaidChart = (workflows) => {\n    let mermaidChart = 'graph TD\\n'; // Mermaid format for directed graph\n\n    // Iterate over workflows to build relationships\n    workflows.forEach(workflow => {\n        // Accessing the workflow JSON data\n        const workflowData = workflow.json;\n\n        // If the workflow has callers (i.e., workflows that call this one)\n        if (workflowData.callers && workflowData.callers.length > 0) {\n            workflowData.callers.forEach(callerId => {\n                // Add a directed edge in Mermaid format (caller --> current workflow)\n                mermaidChart += `  ${callerId} --> ${workflowData.id}\\n`;\n            });\n        }\n    });\n\n    return mermaidChart;\n};\n\n// Generate the Mermaid chart\nconst mermaidChart = buildMermaidChart(workflows);\n\n// Set the mermaid chart into the output JSON for the next node\nreturn [\n    {\n        json: {\n            mermaidChart: mermaidChart,\n        },\n    },\n];\n"
+      },
+      "id": "62262ea0-b60b-4ea9-8daf-dea3cea4cc1f",
+      "name": "Format workflow relationship data for rendering",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -336,
+        80
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=&lt;!DOCTYPE html&gt;\n&lt;html lang=\"en\"&gt;\n&lt;head&gt;\n    &lt;meta charset=\"UTF-8\"&gt;\n    &lt;meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"&gt;\n    &lt;title&gt;n8n Subworkflow Dependency Graph with Mermaid&lt;/title&gt;\n    &lt;link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\"&gt;\n    &lt;script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"&gt;&lt;/script&gt;\n    &lt;style&gt;\n      .mermaid-container {\n        margin-top: 20px;\n        width: 100%;\n        height: 100vh;\n      }\n    &lt;/style&gt;\n&lt;/head&gt;\n&lt;body&gt;\n    &lt;div class=\"container mt-4\"&gt;\n        &lt;h2&gt;n8n Subworkflow Dependency Graph with Mermaid&lt;/h2&gt;\n        &lt;div id=\"workflows-container\"&gt;&lt;/div&gt;\n    &lt;/div&gt;\n    &lt;hr class=\"featurette-divider border-dark\" /&gt;\n\n    &lt;script&gt;\n        const workflowsData = [\n            {\n                mermaidChart: `{{ $json.mermaidChart }}`\n            }\n        ];\n\n        document.addEventListener('DOMContentLoaded', () =&gt; {\n            const workflowsContainer = document.getElementById('workflows-container');\n\n            renderWorkflows(workflowsData);\n\n            function renderWorkflows(workflows) {\n                workflows.forEach((workflow) =&gt; {\n                    const mermaidContainer = document.createElement('div');\n                    mermaidContainer.className = 'mermaid-container';\n                    mermaidContainer.innerHTML = workflow.mermaidChart;\n                    workflowsContainer.appendChild(mermaidContainer);\n                    mermaid.init(undefined, mermaidContainer);\n                });\n            }\n        });\n\n        mermaid.initialize({ startOnLoad: false });\n    &lt;/script&gt;\n\n    &lt;script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js\"&gt;&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n",
+        "options": {}
+      },
+      "id": "8d9d94c0-122d-4538-9141-eeff4472e0cd",
+      "name": "Visualize dependency graph with MermaidJS",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        64,
+        80
+      ],
+      "typeVersion": 1.1
+    }
+  ],
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "GET all tags again",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET all tags": {
+      "main": [
+        [
+          {
+            "node": "Remove existing tags from new_callers list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create new tags": {
+      "main": [
+        [
+          {
+            "node": "Return original pass through values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET workflow(s)": {
+      "main": [
+        [
+          {
+            "node": "Exclude missing workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "And every Sunday": {
+      "main": [
+        [
+          {
+            "node": "GET all workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET instance_url": {
+      "main": [
+        [
+          {
+            "node": "GET all tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET all workflows": {
+      "main": [
+        [
+          {
+            "node": "List callers of subworkflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET all tags again": {
+      "main": [
+        [
+          {
+            "node": "Create tag id:name dictionary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If any new callers": {
+      "main": [
+        [
+          {
+            "node": "Split out new callers as new tags",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Update workflow tags": {
+      "main": [
+        [
+          {
+            "node": "Return dependency graph data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop through workflows": {
+      "main": [
+        [
+          {
+            "node": "Combine dependency graph values into labels",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Format workflow relationship data for rendering",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SET instance_url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When viewed in a browser": {
+      "main": [
+        [
+          {
+            "node": "GET all workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exclude missing workflows": {
+      "main": [
+        [
+          {
+            "node": "Count callers and identify new callers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exclude uncalled workflows": {
+      "main": [
+        [
+          {
+            "node": "GET workflow(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List callers of subworkflows": {
+      "main": [
+        [
+          {
+            "node": "Exclude uncalled workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return dependency graph data": {
+      "main": [
+        [
+          {
+            "node": "Loop through workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create tag id:name dictionary": {
+      "main": [
+        [
+          {
+            "node": "Retrieve tag ids and names from dictionary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When this workflow is activated": {
+      "main": [
+        [
+          {
+            "node": "GET all workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split out new callers as new tags": {
+      "main": [
+        [
+          {
+            "node": "Create new tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return original pass through values": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count callers and identify new callers": {
+      "main": [
+        [
+          {
+            "node": "Loop through workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove existing tags from new_callers list": {
+      "main": [
+        [
+          {
+            "node": "If any new callers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve tag ids and names from dictionary": {
+      "main": [
+        [
+          {
+            "node": "Update workflow tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine dependency graph values into labels": {
+      "main": [
+        [
+          {
+            "node": "Visualize subworkflow dependency graph",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format workflow relationship data for rendering": {
+      "main": [
+        [
+          {
+            "node": "Visualize dependency graph with MermaidJS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "7b9ac785-441e-4557-ab79-eda3dbb60414",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-06T10:50:38.232Z",
+      "createdAt": "2026-07-06T10:50:38.232Z",
+      "role": "workflow:owner",
+      "workflowId": "niNbk7JkY8a1vIuu",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
