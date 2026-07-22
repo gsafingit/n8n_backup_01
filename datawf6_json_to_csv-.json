@@ -1,0 +1,95 @@
+{
+  "updatedAt": "2026-06-28T12:43:11.524Z",
+  "createdAt": "2026-06-24T10:52:41.832Z",
+  "id": "M1XEgg3S93AOWoBG",
+  "name": "DataWF6_JSON_to_CSV",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -32
+      ],
+      "id": "d261c307-3bb2-44f0-ae6d-5553949cdae5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://learn.app.n8n.cloud/webhook/countries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -352,
+        -32
+      ],
+      "id": "b385bd53-f9a0-40ec-82e5-da985afbbf83",
+      "name": "GetCountries"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -144,
+        -32
+      ],
+      "id": "5224783a-8edb-4740-a9ab-00a5bd56c000",
+      "name": "ConvertToCSV"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "GetCountries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetCountries": {
+      "main": [
+        [
+          {
+            "node": "ConvertToCSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "cd78d39c-e3cb-4bef-842e-d740c1c58e62",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-24T10:52:41.835Z",
+      "createdAt": "2026-06-24T10:52:41.835Z",
+      "role": "workflow:owner",
+      "workflowId": "M1XEgg3S93AOWoBG",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
