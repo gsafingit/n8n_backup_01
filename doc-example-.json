@@ -1,0 +1,103 @@
+{
+  "updatedAt": "2026-07-07T14:33:23.993Z",
+  "createdAt": "2026-07-07T09:59:56.253Z",
+  "id": "qRkx1VSvRqu3e0RJ",
+  "name": "Doc Example",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -112
+      ],
+      "id": "6d986fb6-65c5-4752-9e49-c87f8f662820",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 336,
+        "width": 528,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -176
+      ],
+      "id": "812e5421-46fc-479f-93be-f446f56026d4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {
+          "timezone": "America"
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        -112
+      ],
+      "id": "e411550f-d7b0-44e6-8da2-1a6b9e51f837",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "path": "be36ad3e-3ce8-43c7-ac01-9d9cf5ceb2d7",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3cc9c92d-ad94-46c8-9ed7-6685274573ef",
+      "name": "Webhook",
+      "webhookId": "be36ad3e-3ce8-43c7-ac01-9d9cf5ceb2d7"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "f6538655-0d88-4969-b756-177e9533c6f0",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-07T09:59:56.264Z",
+      "createdAt": "2026-07-07T09:59:56.264Z",
+      "role": "workflow:owner",
+      "workflowId": "qRkx1VSvRqu3e0RJ",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
