@@ -1,0 +1,157 @@
+{
+  "updatedAt": "2026-06-27T13:34:36.444Z",
+  "createdAt": "2026-06-27T13:34:18.357Z",
+  "id": "6A3oSm4LOb2jMpJ3",
+  "name": "Data2_JSON_to_Binary(XLSX)",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -48
+      ],
+      "id": "c775e8ce-3205-4423-9701-6d59e7cb64d5",
+      "name": "When clicking Execute workflow"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "_limit",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        -48
+      ],
+      "id": "4e94af6f-2a87-4d21-b1bb-91af9fe087a7",
+      "name": "Get Users"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aaa1",
+              "name": "name",
+              "value": "={{$json.name}}",
+              "type": "string"
+            },
+            {
+              "id": "aaa2",
+              "name": "email",
+              "value": "={{$json.email}}",
+              "type": "string"
+            },
+            {
+              "id": "aaa3",
+              "name": "city",
+              "value": "={{$json.address.city}}",
+              "type": "string"
+            },
+            {
+              "id": "aaa4",
+              "name": "company",
+              "value": "={{$json.company.name}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        -48
+      ],
+      "id": "7499bca0-111b-4b50-8beb-5ebb50b0b653",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        -48
+      ],
+      "id": "0cb63495-a096-4a34-a9f8-8ad7a8d089ee",
+      "name": "Convert to Spreadsheet"
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Users": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to Spreadsheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "a13e9a9c-d8dd-4672-9d53-a7422d291574",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-27T13:34:18.360Z",
+      "createdAt": "2026-06-27T13:34:18.360Z",
+      "role": "workflow:owner",
+      "workflowId": "6A3oSm4LOb2jMpJ3",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
