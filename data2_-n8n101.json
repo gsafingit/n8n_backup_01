@@ -1,0 +1,251 @@
+{
+  "updatedAt": "2026-06-27T13:09:05.787Z",
+  "createdAt": "2026-06-26T15:53:51.439Z",
+  "id": "wnPCF7V9pkiY4DiI",
+  "name": "Data2_",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -80
+      ],
+      "id": "f877565d-115e-4d5d-8f20-dea80ccd0e49",
+      "name": "When clicking Execute workflow"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "_limit",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -128,
+        -80
+      ],
+      "id": "79631a5f-920d-4b6a-931c-7ee1f153fb1f",
+      "name": "Get Users"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1a1a1a1-b2b2-c3c3-d4d4-e5e5e5e5e5e5",
+              "name": "name",
+              "value": "={{$json.name}}",
+              "type": "string"
+            },
+            {
+              "id": "b2b2b2b2-c3c3-d4d4-e5e5-f6f6f6f6f6f6",
+              "name": "city",
+              "value": "={{$json.address.city}}",
+              "type": "string"
+            },
+            {
+              "id": "c3c3c3c3-d4d4-e5e5-f6f6-a7a7a7a7a7a7",
+              "name": "company",
+              "value": "={{$json.company.name}}",
+              "type": "string"
+            },
+            {
+              "id": "50712e18-42ff-4159-9c24-482e5bc2e860",
+              "name": "aa",
+              "value": "={{$json.address.geo.urlEncode()}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        -80
+      ],
+      "id": "964e929b-6cc0-40f5-9ccf-c6f5e902c3a2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -80
+      ],
+      "id": "7a3c25e2-a32a-4974-8ba1-e273243eb466",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -80
+      ],
+      "id": "29326c24-fac2-4796-8703-282b04c55520",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "city"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        80
+      ],
+      "id": "30e781c5-215f-42c0-98e1-65e437a53935",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        80
+      ],
+      "id": "8a038dfc-dcb1-4d13-9bb2-db16cc726cfc",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Users": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "25f1c7b2-c3d9-4fbd-adf0-9a8eaa4c13d0",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-26T15:53:51.443Z",
+      "createdAt": "2026-06-26T15:53:51.443Z",
+      "role": "workflow:owner",
+      "workflowId": "wnPCF7V9pkiY4DiI",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2026-06-26T11:30:02.934Z",
+      "createdAt": "2026-06-26T11:30:02.934Z",
+      "id": "8aVQPQcvS7DRieCI",
+      "name": "n8n101"
+    },
+    {
+      "updatedAt": "2026-06-26T19:11:58.688Z",
+      "createdAt": "2026-06-26T19:11:58.688Z",
+      "id": "cJSTxC4GqVWFbIiB",
+      "name": "Essentials"
+    }
+  ]
+}
