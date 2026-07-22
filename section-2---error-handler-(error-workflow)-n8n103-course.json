@@ -1,0 +1,229 @@
+{
+  "updatedAt": "2026-07-05T13:54:50.076Z",
+  "createdAt": "2026-07-05T13:05:59.407Z",
+  "id": "7hBSSaVNuCWVqrlm",
+  "name": "Section 2 - Error Handler (Error Workflow)",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        16
+      ],
+      "id": "7f84378f-8125-4503-ad9c-edbedb73be8d",
+      "name": "TriggerError"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://learn.app.n8n.cloud/webhook/course/n8n103/error-report",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Assessment-ID",
+              "value": "94c941de557ed8e767ebf9ee7b65f3ae"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "workflow_name",
+              "value": "={{ $json.workflow.name }}"
+            },
+            {
+              "name": "workflow_id",
+              "value": "={{ $json.workflow.id }}"
+            },
+            {
+              "name": "execution_url",
+              "value": "={{ $json.execution.url }}"
+            },
+            {
+              "name": "error_message",
+              "value": "={{ $json.execution.error.message }}"
+            },
+            {
+              "name": "failed_node",
+              "value": "={{ $json.execution.lastNodeExecuted }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -640,
+        16
+      ],
+      "id": "f2506429-0555-449f-9497-c3642a4ac9a3",
+      "name": "ReportError",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "18dZNFyjGYIeZSyZ",
+          "name": "n8n Academy API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Section 2 - Error Handler (Error Workflow)\n\nOwned By: Gary Safin\nLast Updated: 20260705\n\nError workflow that captures failures from linked workflows and\nreports error details to the Academy endpoint.\n\n## Trigger\n- Error Trigger: Fires when a linked workflow fails in production\n\n## Data Captured\n- workflow.name: Name of failed workflow\n- workflow.id: Workflow ID\n- execution.url: Link to failed execution\n- execution.error.message: Error details\n- execution.lastNodeExecuted: Node that failed\n\n## Endpoint\n- POST /webhook/course/n8n103/error-report\n\n## Requirements\n- Must be published to be used as an error workflow\n- Only triggers on production executions, not manual tests\n\nPart of: n8n Foundations Program, N8N103 Course, Section 2",
+        "height": 480,
+        "width": 512
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -288
+      ],
+      "id": "3968640f-df25-482f-998a-9ccb883fda44",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "TriggerError": {
+      "main": [
+        [
+          {
+            "node": "ReportError",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "53d024dd-3913-4615-93a1-ec6dca0e3200",
+  "activeVersionId": "f280db23-8cb0-42a4-8880-ca962467d87f",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-05T13:05:59.413Z",
+      "createdAt": "2026-07-05T13:05:59.413Z",
+      "role": "workflow:owner",
+      "workflowId": "7hBSSaVNuCWVqrlm",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-07-05T13:12:28.000Z",
+    "createdAt": "2026-07-05T13:11:54.197Z",
+    "versionId": "f280db23-8cb0-42a4-8880-ca962467d87f",
+    "workflowId": "7hBSSaVNuCWVqrlm",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -496,
+          -32
+        ],
+        "id": "7f84378f-8125-4503-ad9c-edbedb73be8d",
+        "name": "TriggerError"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://learn.app.n8n.cloud/webhook/course/n8n103/error-report",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-Assessment-ID",
+                "value": "94c941de557ed8e767ebf9ee7b65f3ae"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "workflow_name",
+                "value": "={{ $json.workflow.name }}"
+              },
+              {
+                "name": "workflow_id",
+                "value": "={{ $json.workflow.id }}"
+              },
+              {
+                "name": "execution_url",
+                "value": "={{ $json.execution.url }}"
+              },
+              {
+                "name": "error_message",
+                "value": "={{ $json.execution.error.message }}"
+              },
+              {
+                "name": "failed_node",
+                "value": "={{ $json.execution.lastNodeExecuted }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.4,
+        "position": [
+          -288,
+          -32
+        ],
+        "id": "f2506429-0555-449f-9497-c3642a4ac9a3",
+        "name": "ReportError",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "18dZNFyjGYIeZSyZ",
+            "name": "n8n Academy API Key"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "TriggerError": {
+        "main": [
+          [
+            {
+              "node": "ReportError",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Garry Sa",
+    "name": "Version f280db23",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-07-03T12:24:00.721Z",
+      "createdAt": "2026-07-03T12:24:00.721Z",
+      "id": "WUrmOVJN8imPjuym",
+      "name": "n8n103-course"
+    }
+  ]
+}
