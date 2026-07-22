@@ -1,0 +1,224 @@
+{
+  "updatedAt": "2026-06-27T11:28:28.537Z",
+  "createdAt": "2026-06-27T11:28:16.717Z",
+  "id": "2kSgZg1fyqeJxFPg",
+  "name": "MW 34 Ecommerce Chat Assistant",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": " Hi there! I'm your personal assistant here to help you with anything related to our ecommerce store.\nI can assist you with:\n- Product information\n- Bulk orders\n- Pricing questions\n- Customization options (like adding a logo)\n- Shipping times and return policies\nHere’s how I work:\n- I know the details of our products, pricing, and bulk order discounts.\n- I respond politely, professionally, and clearly.\n- If you're placing a bulk order, I’ll ask for the quantity you need, when you need it, and whether you have your artwork or logo ready.\n## Product Pricing (Standard Retail):\n- **Custom Notebook**: $12.00 each  \n- **Eco Water Bottle**: $15.00 each  \n- **Enamel Mug**: $10.00 each  \n- **Canvas Tote Bag**: $14.00 each\n## Bulk Discount Tiers:\n- 50+ units: 10% off  \n- 100+ units: 15% off  \n- 250+ units: 20% off  \n- 500+ units: 25% off  \n*Discounts apply per product type and are automatically calculated.*\n\n## Shipping & Returns:\n- Standard shipping: 3–5 business days  \n- Bulk orders may take 7–14 business days depending on customization\n- Returns accepted within 30 days for non-customized item\n## Rules:\n- Be honest and helpful\n- Never make up data or offer discounts outside the tiers above\n- If unsure about something, say a team member will follow up\n- If the customer mentions a bulk order, ask how many units they need and if they have artwork ready\n\n\n- if the customer has confirmed they want to place an order output ***** along with the response. \n\nJust ask your question, and I’ll take it from there!\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -576,
+        96
+      ],
+      "id": "82feacb3-47f2-4a65-8d3f-9b32cc48e324",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -624,
+        304
+      ],
+      "id": "bf874021-4db9-4576-a892-3e38f6c1659a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ryakd5x2Cf67odb1",
+          "name": "OpenAI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        272
+      ],
+      "id": "7e6efcb9-be52-447b-b9e5-9d4395785bee",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1abf7c6a-4cd9-4ba6-82b0-d109c5e516b3",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "*****",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        96
+      ],
+      "id": "8b4ad1f4-4759-40b6-8392-e5db35b6dd72",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        0,
+        192
+      ],
+      "id": "61bbad18-7953-4360-b7ba-d6f94e5d2c80",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = \"Your order has been placed\"\n\nreturn {text}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a713c930-3a66-4a4d-9ab2-7edf52eb50f0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -768,
+        96
+      ],
+      "id": "c8b6349d-7762-4230-a81c-e20341e89ee5",
+      "name": "When chat message received",
+      "webhookId": "d1dc1574-9cc3-428b-ad67-288b8b0f8409"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "bfc06f0a-89e0-4f2a-b89b-315652e298a8",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-27T11:28:16.722Z",
+      "createdAt": "2026-06-27T11:28:16.722Z",
+      "role": "workflow:owner",
+      "workflowId": "2kSgZg1fyqeJxFPg",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
