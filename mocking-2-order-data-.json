@@ -1,0 +1,164 @@
+{
+  "updatedAt": "2026-07-04T16:00:42.425Z",
+  "createdAt": "2026-07-04T09:38:00.623Z",
+  "id": "NwghzNJ1mPru4xtC",
+  "name": "Mocking 2 order data",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -48
+      ],
+      "id": "ec305961-ee25-4eab-8779-076c1686bed2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        -48
+      ],
+      "id": "85b7c663-e59d-4e71-9c46-69d08dbd2ead",
+      "name": "Edit Fields",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f001",
+              "name": "name",
+              "type": "string",
+              "value": "Alice Johnson"
+            },
+            {
+              "id": "f002",
+              "name": "email",
+              "type": "string",
+              "value": "alice@example.com"
+            },
+            {
+              "id": "f003",
+              "name": "order_total",
+              "type": "number",
+              "value": 75
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        96
+      ],
+      "id": "478aa46b-cca9-4444-8620-cda456900231",
+      "name": "Mock Order Data"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "name": "Alice Johnson",
+          "email": "alice@example.com",
+          "order_total": 75
+        }
+      },
+      {
+        "json": {
+          "name": "Bob Smith",
+          "email": "bob@example.com",
+          "order_total": 30
+        }
+      },
+      {
+        "json": {
+          "name": "Carol Davis",
+          "email": "carol@example.com",
+          "order_total": 120
+        }
+      }
+    ],
+    "Edit Fields": [
+      {
+        "json": {
+          "name": "Alice Johnson",
+          "email": "alice@example.com",
+          "order_total": 75
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "name": "Bob Smith",
+          "email": "bob@example.com",
+          "order_total": 30
+        },
+        "pairedItem": {
+          "item": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Carol Davis",
+          "email": "carol@example.com",
+          "order_total": 120
+        },
+        "pairedItem": {
+          "item": 2
+        }
+      }
+    ]
+  },
+  "versionId": "d6e3535d-2c32-4fcb-824e-f8c4e8be23d3",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-04T09:38:00.642Z",
+      "createdAt": "2026-07-04T09:38:00.642Z",
+      "role": "workflow:owner",
+      "workflowId": "NwghzNJ1mPru4xtC",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
