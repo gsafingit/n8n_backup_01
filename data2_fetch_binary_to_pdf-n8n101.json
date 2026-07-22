@@ -1,0 +1,115 @@
+{
+  "updatedAt": "2026-06-27T13:33:31.745Z",
+  "createdAt": "2026-06-26T19:12:40.217Z",
+  "id": "wQfqWIbKYewAACZn",
+  "name": "Data2_Fetch_Binary_to_PDF",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -32
+      ],
+      "id": "c57ca986-b0df-42ad-9f6e-24d971d14ab9",
+      "name": "When clicking Execute workflow"
+    },
+    {
+      "parameters": {
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "5cc46966-75f7-41b7-8f86-90a52c8f9748",
+      "name": "Fetch PDF"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        176,
+        -32
+      ],
+      "id": "17d4ae7b-f723-406f-aa01-828beb604fa8",
+      "name": "Extract Text from PDF"
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Fetch PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract Text from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "382eb6f9-0908-4a34-83c2-0d266699b5e9",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-26T19:12:40.224Z",
+      "createdAt": "2026-06-26T19:12:40.224Z",
+      "role": "workflow:owner",
+      "workflowId": "wQfqWIbKYewAACZn",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2026-06-26T11:30:02.934Z",
+      "createdAt": "2026-06-26T11:30:02.934Z",
+      "id": "8aVQPQcvS7DRieCI",
+      "name": "n8n101"
+    },
+    {
+      "updatedAt": "2026-06-26T19:11:58.688Z",
+      "createdAt": "2026-06-26T19:11:58.688Z",
+      "id": "cJSTxC4GqVWFbIiB",
+      "name": "Essentials"
+    }
+  ]
+}
