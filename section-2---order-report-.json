@@ -1,0 +1,153 @@
+{
+  "updatedAt": "2026-07-15T09:04:55.273Z",
+  "createdAt": "2026-07-15T08:59:18.113Z",
+  "id": "0Sn5w2tyKGPzPpxP",
+  "name": "Section 2 - Order Report",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        -112
+      ],
+      "id": "ccc846d6-1e0e-4b10-8623-a13ae16c1acb",
+      "name": "TriggerManual"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "O0UntKab4ozcksJK",
+          "mode": "list",
+          "cachedResultName": "n8n102_course_orders",
+          "cachedResultUrl": "/projects/7yVA2UbfXRYAJ8zK/datatables/O0UntKab4ozcksJK"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -320,
+        -112
+      ],
+      "id": "d9f1a98a-f232-4140-bf27-38ca3ce690ee",
+      "name": "GetAllOrders:"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "total"
+            },
+            {
+              "field": "order_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -112,
+        -112
+      ],
+      "id": "8d98e35c-a0f8-46a8-8268-21d1bf7aa824",
+      "name": "SummarizeByStatus:"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78937a37-b0af-49aa-a62d-5a84c7deb3a8",
+              "name": "total_revenue",
+              "value": "={{ $json.sum_total }}",
+              "type": "number"
+            },
+            {
+              "id": "abd086f6-7db1-46a5-bde1-087fd43a7a35",
+              "name": "order_count",
+              "value": "={{ $json.count_order_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        -112
+      ],
+      "id": "8cf3b6b5-4d47-4f1f-9271-027278ed7bc3",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "TriggerManual": {
+      "main": [
+        [
+          {
+            "node": "GetAllOrders:",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetAllOrders:": {
+      "main": [
+        [
+          {
+            "node": "SummarizeByStatus:",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SummarizeByStatus:": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "8f56d54b-f828-4d8b-9dc9-f9af55c45023",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-15T08:59:18.115Z",
+      "createdAt": "2026-07-15T08:59:18.115Z",
+      "role": "workflow:owner",
+      "workflowId": "0Sn5w2tyKGPzPpxP",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
