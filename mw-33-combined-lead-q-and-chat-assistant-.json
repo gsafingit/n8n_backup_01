@@ -1,0 +1,409 @@
+{
+  "updatedAt": "2026-06-27T11:29:17.000Z",
+  "createdAt": "2026-06-27T11:29:17.359Z",
+  "id": "PrrWsVoIIN0fnaLq",
+  "name": "MW 33 Combined Lead Q and Chat Assistant",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "4035af3a-2553-4beb-8eb4-0bdd3075c127",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        640
+      ],
+      "webhookId": "e104e40e-6134-4825-a6f0-8a646d882662"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        64
+      ],
+      "id": "c3b68a75-b5c6-44ad-a2a7-bb687ab9a13d",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      name: \"Jordan Lee\",\n      transcript: \"Hi, I'm looking to place a large order of custom mugs for an upcoming corporate event. Probably around 300 units.\"\n    }\n  },\n  {\n    json: {\n      name: \"Alex Chen\",\n      transcript: \"Do you sell just one of these backpacks? I’m shopping for my daughter.\"\n    }\n  },\n  {\n    json: {\n      name: \"Samira Patel\",\n      transcript: \"We’re exploring gifts for our team and might want to add a logo. What's your bulk pricing on notebooks?\"\n    }\n  },\n  {\n    json: {\n      name: \"Marcus Grant\",\n      transcript: \"Just checking shipping times for a single product before I order. Thanks.\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        112
+      ],
+      "id": "2219b358-4d6b-480a-acdc-c48b729d7750",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Name: {{$json[\"name\"]}}\nTranscript: {{$json[\"transcript\"]}}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a lead qualification assistant for an ecommerce store. Your job is to determine if a customer from a phone call is a good lead for a **bulk order**.\n\nIf they mention:\n- large quantities\n- logos\n- team gifts\n- events\n- wholesale\n- or any indication of buying in bulk\n\nThen classify them as a **good lead**. Otherwise, mark them as not a good lead.\n\nRespond only in valid JSON with:\n- \"Name\": customer’s name\n- \"Is Good Lead\": Yes or No\n- \"Reasoning\": short one-sentence reason"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        592,
+        112
+      ],
+      "id": "70bf307b-869c-43fc-9331-7e4ae2a475a4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        368
+      ],
+      "id": "424aec61-7816-4584-8fbb-34203de28e14",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Name\": \"Alex Chen\",\n  \"Is Good Lead\": \"No\",\n  \"Reasoning\": \"The customer is interested in buying a single item for personal use.\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        368
+      ],
+      "id": "81d2cd4d-4949-4415-82c8-ef3640b9d05b",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "948759d1-4c0c-4751-a83d-9daa1ec3bb1c",
+              "name": "Name",
+              "value": "={{$json[\"output\"][\"Name\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "91dbdf7b-8f0d-4ae2-ab36-701b01b581e2",
+              "name": "Good Lead",
+              "value": "={{$json[\"output\"][\"Is Good Lead\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "5d38cd05-eb1a-4734-83d2-cdd5ee973ea7",
+              "name": "Reasoning",
+              "value": "={{ $json.output.Reasoning }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        112
+      ],
+      "id": "0f03cbc4-2e2b-427a-8cea-e400d7dfaf34",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "👋 Hi there! I'm your personal assistant here to help you with anything related to our ecommerce store.\n\nI can assist you with:\n- Product information\n- Bulk orders\n- Pricing questions\n- Customization options (like adding a logo)\n- Shipping times and return policies\n\nHere’s how I work:\n- I know the details of our products, pricing, and bulk order discounts.\n- I respond politely, professionally, and clearly.\n- If you're placing a bulk order, I’ll ask for the quantity you need, when you need it, and whether you have your artwork or logo ready.\n\n## Product Pricing (Standard Retail):\n- **Custom Notebook**: $12.00 each  \n- **Eco Water Bottle**: $15.00 each  \n- **Enamel Mug**: $10.00 each  \n- **Canvas Tote Bag**: $14.00 each\n\n## Bulk Discount Tiers:\n- 50+ units: 10% off  \n- 100+ units: 15% off  \n- 250+ units: 20% off  \n- 500+ units: 25% off  \n*Discounts apply per product type and are automatically calculated.*\n\n## Shipping & Returns:\n- Standard shipping: 3–5 business days  \n- Bulk orders may take 7–14 business days depending on customization\n- Returns accepted within 30 days for non-customized items\n\n## Rules:\n- Be honest and helpful\n- Never make up data or offer discounts outside the tiers above\n- If unsure about something, say a team member will follow up\n- If the customer mentions a bulk order, ask how many units they need and if they have artwork ready\n\n\n- if the customer has confirmed they want to place an order output ***** along with the response. \n\nJust ask your question, and I’ll take it from there!\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        480,
+        640
+      ],
+      "id": "eb4f6b4a-7b6a-4e45-9531-8ae3525520ce",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        432,
+        864
+      ],
+      "id": "b823390d-06e9-4da2-af86-f1dd21045420",
+      "name": "OpenAI Chat Model2"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        880
+      ],
+      "id": "1400db4f-c7f2-4e6a-a3c9-b374167b2ca2",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a3eb2967-e920-4342-ad2b-a2ae3b972955",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "*****",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        672
+      ],
+      "id": "5bd46545-3c44-4859-aec9-e6d386b6e2fc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = \"Your order has been placed\"\n\nreturn {text}\n \n "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        560
+      ],
+      "id": "98c6e7dd-0989-47cb-8427-152dec3b19e7",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        784
+      ],
+      "id": "ca3e60f7-8195-4a5b-99b7-31a4d359c644",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "## Lead Qualifier Agent\n",
+        "height": 500,
+        "width": 1300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "38795f7e-3e1a-40c6-93cd-7ffce7ec2350",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Ecommerce Chatbot\n",
+        "height": 540,
+        "width": 1300,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        528
+      ],
+      "id": "695ede28-c5a6-4965-bc7e-4328fc526e62",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "9b600c3e-61de-4600-9c64-12a33bc6ccad",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-27T11:29:17.362Z",
+      "createdAt": "2026-06-27T11:29:17.362Z",
+      "role": "workflow:owner",
+      "workflowId": "PrrWsVoIIN0fnaLq",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
