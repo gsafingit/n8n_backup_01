@@ -1,0 +1,225 @@
+{
+  "updatedAt": "2026-07-10T14:22:53.387Z",
+  "createdAt": "2026-07-10T14:22:37.134Z",
+  "id": "BWwjtYyPL8ZEeJNl",
+  "name": "Loop Over Items",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d299ca45-7cad-44dc-9a48-8b9276956760",
+      "name": "TriggerManual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -752,
+        -64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "options": {}
+      },
+      "id": "9d3993ca-28d0-410c-bdac-66dc51129fd7",
+      "name": "GetAllOrders",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -528,
+        -64
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "batchSize": 3,
+        "options": {}
+      },
+      "id": "1ee38957-df00-4d24-9979-4f87d1705ecc",
+      "name": "BatchOrders",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -304,
+        -64
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "options": {}
+      },
+      "id": "37fc96dc-2026-44b6-b03b-b01949fdcafb",
+      "name": "SendBatchToAPI",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -80,
+        -16
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "8e4a4276-7556-491e-835f-85d25dd22c03",
+      "name": "LogCompletion",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -80,
+        -208
+      ],
+      "typeVersion": 3.4
+    }
+  ],
+  "connections": {
+    "TriggerManual": {
+      "main": [
+        [
+          {
+            "node": "GetAllOrders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetAllOrders": {
+      "main": [
+        [
+          {
+            "node": "BatchOrders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BatchOrders": {
+      "main": [
+        [
+          {
+            "node": "LogCompletion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendBatchToAPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendBatchToAPI": {
+      "main": [
+        [
+          {
+            "node": "BatchOrders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "GetAllOrders": [
+      {
+        "json": {
+          "order_id": "ORD-001",
+          "customer": "Acme Corp",
+          "total": 250
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-002",
+          "customer": "Globex Inc",
+          "total": 45
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-003",
+          "customer": "Initech",
+          "total": 180
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-004",
+          "customer": "Umbrella Ltd",
+          "total": 320
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-005",
+          "customer": "Stark Industries",
+          "total": 75
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-006",
+          "customer": "Wayne Enterprises",
+          "total": 410
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-007",
+          "customer": "Cyberdyne Systems",
+          "total": 95
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-008",
+          "customer": "Wonka Industries",
+          "total": 150
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-009",
+          "customer": "Soylent Corp",
+          "total": 60
+        }
+      },
+      {
+        "json": {
+          "order_id": "ORD-010",
+          "customer": "Massive Dynamic",
+          "total": 285
+        }
+      }
+    ]
+  },
+  "versionId": "ddf09125-0b90-4234-82da-4fec1182c4e1",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-10T14:22:37.137Z",
+      "createdAt": "2026-07-10T14:22:37.137Z",
+      "role": "workflow:owner",
+      "workflowId": "BWwjtYyPL8ZEeJNl",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
