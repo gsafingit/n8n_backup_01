@@ -1,0 +1,169 @@
+{
+  "updatedAt": "2026-07-04T16:35:06.110Z",
+  "createdAt": "2026-07-04T10:15:47.604Z",
+  "id": "oLpLMOia3Gdh06bX",
+  "name": "Error Capture",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a70ee23a-7564-474a-9991-7a626b523fd9",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f001",
+              "name": "error_message",
+              "type": "string",
+              "value": "={{ $json.execution.error.message }}"
+            },
+            {
+              "id": "f002",
+              "name": "failed_workflow",
+              "type": "string",
+              "value": "={{ $json.workflow.name }}"
+            },
+            {
+              "id": "f003",
+              "name": "last_node",
+              "type": "string",
+              "value": "={{ $json.execution.lastNodeExecuted }}"
+            },
+            {
+              "id": "f5168ab0-acd9-4418-a30f-ac9a91d6d286",
+              "name": "exec_log_url",
+              "value": "={{ $json.execution.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "fa3f4382-8d01-4689-8837-08b1c78c1eb3",
+      "name": "Extract Error Info"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Error Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "d7f7098d-a900-484c-8593-4b2a27b6c3a3",
+  "activeVersionId": "88bb3f31-acd4-4262-8d6b-820c85af9d66",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-04T10:15:47.607Z",
+      "createdAt": "2026-07-04T10:15:47.607Z",
+      "role": "workflow:owner",
+      "workflowId": "oLpLMOia3Gdh06bX",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-07-04T10:20:28.000Z",
+    "createdAt": "2026-07-04T10:15:55.789Z",
+    "versionId": "88bb3f31-acd4-4262-8d6b-820c85af9d66",
+    "workflowId": "oLpLMOia3Gdh06bX",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "a70ee23a-7564-474a-9991-7a626b523fd9",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f001",
+                "name": "error_message",
+                "type": "string",
+                "value": "={{ $json.execution.error.message }}"
+              },
+              {
+                "id": "f002",
+                "name": "failed_workflow",
+                "type": "string",
+                "value": "={{ $json.workflow.name }}"
+              },
+              {
+                "id": "f003",
+                "name": "last_node",
+                "type": "string",
+                "value": "={{ $json.execution.lastNodeExecuted }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          0
+        ],
+        "id": "fa3f4382-8d01-4689-8837-08b1c78c1eb3",
+        "name": "Extract Error Info"
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Extract Error Info",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Garry Sa",
+    "name": "Version 88bb3f31",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
