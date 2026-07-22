@@ -1,0 +1,277 @@
+{
+  "updatedAt": "2026-07-17T10:19:22.594Z",
+  "createdAt": "2026-07-16T10:21:07.826Z",
+  "id": "3i5XaPta5finwl5Q",
+  "name": "Email_Digest",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        -272
+      ],
+      "id": "bf23199d-bac5-4b96-a57d-44a00df02f41",
+      "name": "TriggerManual"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        -272
+      ],
+      "id": "e75bab7f-6c33-46b8-8992-3627eb74f722",
+      "name": "SetDateFrame"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "16ac7b69-ff01-49bd-abdd-459089d0d428",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "temuemail.com",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -368,
+        -272
+      ],
+      "id": "777ba910-f888-4ad7-98f1-c2cb98b9db61",
+      "name": "FilterTemu"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -576,
+        -272
+      ],
+      "id": "06802076-5d79-4e83-bbdb-202893e252f3",
+      "name": "GetMail",
+      "webhookId": "021ee849-b07c-4ffd-973d-fef67fe90a72",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CdbfPq10aTpOov7n",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "57f1f8df-413e-4697-9561-41d931401752",
+              "name": "From",
+              "value": "Temu",
+              "type": "string"
+            },
+            {
+              "id": "43c502f0-a2ca-41a4-83ee-7c2bfbea6a74",
+              "name": "Subject",
+              "value": "={{ $json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "8d108a2c-9d94-411c-af77-f7e5a5b5c6bf",
+              "name": "Date",
+              "value": "={{ DateTime.fromMillis(Number($json.internalDate)).toFormat('yyyy-MM-dd HH:mm') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -272
+      ],
+      "id": "eff68d72-403f-4d79-a172-e339fe8f02c5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "id"
+            }
+          ]
+        },
+        "fieldsToSplitBy": "From, Date",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -176,
+        -80
+      ],
+      "id": "0a1d3a1e-32fd-41eb-8aea-12ffa3b8a419",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "57f1f8df-413e-4697-9561-41d931401752",
+              "name": "From",
+              "value": "={{ $json.From }}",
+              "type": "string"
+            },
+            {
+              "id": "43c502f0-a2ca-41a4-83ee-7c2bfbea6a74",
+              "name": "Subject",
+              "value": "={{ $json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "8d108a2c-9d94-411c-af77-f7e5a5b5c6bf",
+              "name": "Date",
+              "value": "={{ DateTime.fromMillis(Number($json.internalDate)).toFormat('yyyy-MM-dd') }}",
+              "type": "string"
+            },
+            {
+              "id": "4a923280-55cf-4781-8820-44c57fdf5a34",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        -80
+      ],
+      "id": "c2c739be-b6d7-4883-b392-6127b8633414",
+      "name": "Edit Fields1"
+    }
+  ],
+  "connections": {
+    "TriggerManual": {
+      "main": [
+        [
+          {
+            "node": "SetDateFrame",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetDateFrame": {
+      "main": [
+        [
+          {
+            "node": "GetMail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMail": {
+      "main": [
+        [
+          {
+            "node": "FilterTemu",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FilterTemu": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "221c93d4-54d2-4e03-8ad2-179ff5eae119",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-16T10:21:07.827Z",
+      "createdAt": "2026-07-16T10:21:07.827Z",
+      "role": "workflow:owner",
+      "workflowId": "3i5XaPta5finwl5Q",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
