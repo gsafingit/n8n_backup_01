@@ -1,0 +1,118 @@
+{
+  "updatedAt": "2026-06-28T12:43:22.484Z",
+  "createdAt": "2026-06-24T14:51:46.316Z",
+  "id": "hSoASjBR17LMUHcq",
+  "name": "DataWF10_ErrorHandling",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        -48
+      ],
+      "id": "5d1a8f26-ec81-42f2-b317-6e9d6b776ce9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://httpstat.us/500",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -320,
+        -48
+      ],
+      "id": "675c2705-6018-4845-a95b-2b3cc9d0c2fe",
+      "name": "BadRequest",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -112,
+        -144
+      ],
+      "id": "05aec382-fe95-4861-a620-a3e0a3dc9fdc",
+      "name": "Success"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -112,
+        48
+      ],
+      "id": "78b8a0fe-9b8c-4f2b-a6e0-4f8db842003f",
+      "name": "HandleError"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "BadRequest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BadRequest": {
+      "main": [
+        [
+          {
+            "node": "Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HandleError",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "84fb12ae-39ba-452c-a91f-1a414c925ac4",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-24T14:51:46.317Z",
+      "createdAt": "2026-06-24T14:51:46.317Z",
+      "role": "workflow:owner",
+      "workflowId": "hSoASjBR17LMUHcq",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
