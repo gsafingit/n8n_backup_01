@@ -1,0 +1,1001 @@
+{
+  "updatedAt": "2026-07-06T11:05:38.566Z",
+  "createdAt": "2026-07-06T10:55:59.840Z",
+  "id": "SmnAjsCMOazyli6E",
+  "name": "Embedded_Scalable AI Agent",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "dc7e111f-00d9-4611-bf2f-e834b5210c3b",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        208,
+        1024
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1YFTbVGlnpdYF5FuA6grfyvzmcdjcPviClAqbJ5HJIlc",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={\n  \"date\": \"{{ $now }}\",\n  \"memory\": \"{{ $json.query }}\"\n},\n"
+            }
+          ]
+        }
+      },
+      "id": "c04c217b-0f28-4827-9d02-f27c64bd6bae",
+      "name": "Save Long Term Memories",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        912,
+        1024
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b7e85d8-379b-4a0f-9799-9193a29f0447",
+              "name": "response",
+              "type": "string",
+              "value": "Memory saved"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e291a636-0afe-410c-af36-7b8d9066e2ed",
+      "name": "Saved response",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1088,
+        1024
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b7e85d8-379b-4a0f-9799-9193a29f0447",
+              "name": "response",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0d74b595-6025-4e14-b67e-d409141bb73a",
+      "name": "Respond with long term memories",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1088,
+        1328
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1YFTbVGlnpdYF5FuA6grfyvzmcdjcPviClAqbJ5HJIlc"
+      },
+      "id": "22ad9516-925d-4fa1-b237-02a81b2b65a0",
+      "name": "Retrieve Long Term Memories3",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        912,
+        2000
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=n8n User Memories\n{{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "71871f91-b6dc-44a1-91bd-a52e0874170c",
+      "name": "Send Success Message to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1424,
+        1632
+      ],
+      "webhookId": "3ba1ee6d-1648-4421-823b-e68ae14d769b",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $env.EMAIL_ADDRESS_JOE }}",
+        "subject": "n8n User Memories",
+        "message": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "820b1208-d70a-4a9d-858f-662100131fc0",
+      "name": "Email Workflow Stats",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1424,
+        2000
+      ],
+      "webhookId": "d9ef6f36-941f-4110-9b3e-9e54d9bc9581",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "e98cc62c-5dfe-4edb-ba9e-c53e09fc2fb5",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1200,
+        1760
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "0522a1f3-9140-418b-9fd5-95f46ce963fa",
+      "name": "OpenAI Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1200,
+        2144
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "name": "send_memories_to_telegram",
+        "description": "Call this tool to send memories to Telegram",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id }}"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "route",
+              "stringValue": "=send_memories_to_telegram"
+            }
+          ]
+        },
+        "jsonSchemaExample": ""
+      },
+      "id": "89a2b738-13b2-4292-b069-f9ce4df0dc20",
+      "name": "📤Send Memories to Telegram",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        1248,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "name": "send_memories_to_gmail",
+        "description": "Call this tool to send memories to Gmail",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id }}"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "route",
+              "stringValue": "=send_memories_to_gmail"
+            }
+          ]
+        },
+        "jsonSchemaExample": ""
+      },
+      "id": "6be9591d-5bcb-4ccd-9bb1-7039709334ee",
+      "name": "📫Send Memories to Gmail",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        1504,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "name": "save_long_term_memory",
+        "description": "Call this tool to save long term memories",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id }}"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "route",
+              "stringValue": "=save_memory"
+            }
+          ]
+        },
+        "jsonSchemaExample": ""
+      },
+      "id": "b500f306-f5f6-490f-905c-43552f2b5eb4",
+      "name": "🧠Save Memories",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        720,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "name": "retrieve_long_term_memory",
+        "description": "Call this tool to retrieve long term memories",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id }}"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "route",
+              "stringValue": "=retrieve_memory"
+            }
+          ]
+        },
+        "jsonSchemaExample": ""
+      },
+      "id": "01bb3631-3d3f-4056-b3dd-cd56bb6cd32d",
+      "name": "🔎Retrieve Memories",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        992,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "f43f29fb-e7f7-44c1-a681-fe811a0b0fb1",
+      "name": "🤯Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        400,
+        608
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a highly capable and intelligent assistant designed to assist users by leveraging tools for long-term memory, contextual understanding, and real-time information retrieval.  You have excellent long term memory.  The current date and time is {{ $now }}\n\n## TOOLS\n-save_long_term_memory\n-retrieve_long_term_memory\n-send_memories_to_gmail\n-send_memories_to_telegram\n\n## RULES\n- If you do not know the answer then consider checking the long term memories.\n\n\n\n\n\n"
+        }
+      },
+      "id": "686d285e-0bbb-4384-9f59-603593d2471a",
+      "name": "🧠 AI Agent w/Long Term Memory",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        832,
+        192
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "5b0a56d3-f3c1-4eb6-a7f6-efdb3b340deb",
+      "name": "🤖OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        144,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f931e5ef-bb05-4c6f-a891-82548b1bc5ca",
+      "name": "Ⓜ️ When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        272,
+        192
+      ],
+      "webhookId": "2060403b-3fea-4fdf-a6d7-693bc477baaf",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Format this content into a simple unformatted list that can be sent to Telegram: {{ $json.content }}.  Avoid any preamble or further explanation."
+      },
+      "id": "634783c8-9bc2-48bc-adfa-de50324b2bb1",
+      "name": "Prepare Telegram Message",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1088,
+        1632
+      ],
+      "typeVersion": 1.5
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Format this content into a simple and modern HTML table that is max 800px wide that can be used as the content for an email: {{ $json.content }}.  Avoid any preamble or further explanation.  Remove all ``` and ```html from response."
+      },
+      "id": "b236c6c0-6045-4fa6-bc67-b85d3b705f1d",
+      "name": "Prepare Gmail Message",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1088,
+        2000
+      ],
+      "typeVersion": 1.5
+    },
+    {
+      "parameters": {
+        "content": "## 1️⃣ Save Memories",
+        "height": 280,
+        "color": 4
+      },
+      "id": "5c34cfcb-70dc-4f86-ae66-50477a60d456",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        640,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1YFTbVGlnpdYF5FuA6grfyvzmcdjcPviClAqbJ5HJIlc"
+      },
+      "id": "d93f2e38-e1d4-45d7-92c4-33e881114f77",
+      "name": "Retrieve Long Term Memories",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        912,
+        1328
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "save_memory"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "1️⃣ Save"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "86d44336-bab7-422f-9266-fcb513252d19",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "retrieve_memory"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": " 2️⃣Retrieve "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "29f37628-6381-46af-babb-74bf00b4a849",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "send_memories_to_telegram"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": " 3️⃣Telegram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "fdb7c8aa-4108-43f6-8f6b-71cd8f383d2a",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "send_memories_to_gmail"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "4️⃣Gmail"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c3f266f9-068a-4d93-aefa-3f796d74f0af",
+      "name": "Memory Tool Router",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        528,
+        1008
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "content": "## 3️⃣ Send Memories to Telegram",
+        "height": 280,
+        "color": 6
+      },
+      "id": "949f96a2-4c35-4160-b60a-5b37683e2dc4",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1168,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 4️⃣ Send Memories to Gmail",
+        "height": 280,
+        "color": 6
+      },
+      "id": "0cf97df8-7167-441e-8b82-2b2e3026190d",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1424,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 2️⃣ Retrieve Memories",
+        "height": 280,
+        "color": 4
+      },
+      "id": "3c79edfc-d9a9-4b62-8748-58314c14e342",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        912,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Short Term Chat Memory",
+        "height": 280,
+        "color": 3
+      },
+      "id": "4d7fda67-0061-4584-9157-d7cff2818f6a",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Cloud LLM",
+        "height": 280,
+        "color": 5
+      },
+      "id": "0338fedf-a12b-41cb-98a4-7f97d376efd2",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        64,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "AI Agent Chatbot With Long Term Memory Tools",
+        "height": 840,
+        "width": 1740
+      },
+      "id": "382e4b6d-e0cb-43e2-a417-835efe653550",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🛠️ Agentic Long Term Memory Management Tool Options",
+        "height": 400,
+        "width": 1100,
+        "color": 7
+      },
+      "id": "0bcc5375-3cc9-474e-b122-f2137716b0f2",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        400
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 1️⃣ Save Long Term Memories Tool",
+        "height": 280,
+        "width": 560,
+        "color": 4
+      },
+      "id": "04dbc60c-cd2e-4f59-bcea-926d3bce4628",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        944
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 2️⃣ Retrieve Long Term Memories Tool",
+        "height": 280,
+        "width": 560,
+        "color": 4
+      },
+      "id": "27212742-0b88-44d5-812f-4ab375d18355",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        1248
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 3️⃣ Send Memories to Telegram Tool",
+        "height": 360,
+        "width": 840,
+        "color": 6
+      },
+      "id": "90ff39b4-4ab5-490d-a709-965470922302",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        1552
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1YFTbVGlnpdYF5FuA6grfyvzmcdjcPviClAqbJ5HJIlc"
+      },
+      "id": "6e114c47-65e8-40e4-94ae-a6ea3280ea93",
+      "name": "Retrieve Long Term Memories2",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        912,
+        1632
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## 4️⃣ Send Memories to Gmail Tool",
+        "height": 360,
+        "width": 840,
+        "color": 6
+      },
+      "id": "38550b1d-a679-4c90-a657-79a3a12c7ad7",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        1920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Memory Tool Router",
+        "height": 380,
+        "width": 300,
+        "color": 2
+      },
+      "id": "b1d01ece-2c84-4512-b853-403887d9b72c",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        432,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Receive Memory Tool Instructions from Agent",
+        "height": 380,
+        "width": 260,
+        "color": 7
+      },
+      "id": "07114426-a324-4033-9c24-93c379451b94",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🛠️ Long Term Memory Tool Kit",
+        "height": 1440,
+        "width": 920,
+        "color": 7
+      },
+      "id": "3ae76cc4-c1bc-4028-8ddf-fdeb17474589",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        768,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "color": "#D23232"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        1088
+      ],
+      "id": "76f68ac1-c334-44d9-a36c-375fe37f4f10",
+      "name": "Sticky Note8"
+    }
+  ],
+  "connections": {
+    "🧠Save Memories": {
+      "ai_tool": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory Tool Router": {
+      "main": [
+        [
+          {
+            "node": "Save Long Term Memories",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retrieve Long Term Memories",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retrieve Long Term Memories2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retrieve Long Term Memories3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Prepare Telegram Message",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Prepare Gmail Message",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Gmail Message": {
+      "main": [
+        [
+          {
+            "node": "Email Workflow Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔎Retrieve Memories": {
+      "ai_tool": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Long Term Memories": {
+      "main": [
+        [
+          {
+            "node": "Saved response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Telegram Message": {
+      "main": [
+        [
+          {
+            "node": "Send Success Message to Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤯Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📫Send Memories to Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Long Term Memories": {
+      "main": [
+        [
+          {
+            "node": "Respond with long term memories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Long Term Memories2": {
+      "main": [
+        [
+          {
+            "node": "Prepare Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Long Term Memories3": {
+      "main": [
+        [
+          {
+            "node": "Prepare Gmail Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📤Send Memories to Telegram": {
+      "ai_tool": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Memory Tool Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ⓜ️ When chat message received": {
+      "main": [
+        [
+          {
+            "node": "🧠 AI Agent w/Long Term Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "dd3cf143-fd38-45b9-a69c-7c2f7e402f08",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-06T10:55:59.843Z",
+      "createdAt": "2026-07-06T10:55:59.843Z",
+      "role": "workflow:owner",
+      "workflowId": "SmnAjsCMOazyli6E",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
