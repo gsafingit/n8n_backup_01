@@ -1,0 +1,289 @@
+{
+  "updatedAt": "2026-07-12T12:11:43.877Z",
+  "createdAt": "2026-07-12T11:31:53.418Z",
+  "id": "SQEePwftX5cKRCeF",
+  "name": "Wait + Loop Over",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f13cbd6a-454d-48a4-8cd7-e4a05bf5e210",
+      "name": "TriggerManual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -784,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "options": {}
+      },
+      "id": "ab3f6185-297e-4fb0-9b4e-73b39be4105f",
+      "name": "GetAllRecords",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -560,
+        0
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "id": "115aadf8-c3f8-4c48-86d5-1cd3dbd7d672",
+      "name": "BatchRecords",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -336,
+        0
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "options": {}
+      },
+      "id": "34e3ef9b-74f3-4e84-914c-d8f415dbe001",
+      "name": "SendBatchToAPI",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -112,
+        0
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "id": "4242bdfa-767e-4359-b86d-bbcefe2a550e",
+      "name": "WaitForRateLimit",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        112,
+        80
+      ],
+      "webhookId": "wt-demo-wait",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "47755f94-32ce-40a7-977c-b5c7c11f71c7",
+      "name": "LogCompletion",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -112,
+        -192
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -176
+      ],
+      "id": "f6b32c63-6092-48a4-bb87-793aa14b1bad",
+      "name": "Wait",
+      "webhookId": "15cf0549-e099-48df-ae61-40f416135330",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -304
+      ],
+      "id": "aa42fccd-dfde-45c3-b1d7-5309b3ad6323",
+      "name": "Stop and Error",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "TriggerManual": {
+      "main": [
+        [
+          {
+            "node": "GetAllRecords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetAllRecords": {
+      "main": [
+        [
+          {
+            "node": "BatchRecords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BatchRecords": {
+      "main": [
+        [
+          {
+            "node": "LogCompletion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendBatchToAPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendBatchToAPI": {
+      "main": [
+        [
+          {
+            "node": "WaitForRateLimit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WaitForRateLimit": {
+      "main": [
+        [
+          {
+            "node": "BatchRecords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "GetAllRecords": [
+      {
+        "json": {
+          "id": 1,
+          "title": "Record A",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 2,
+          "title": "Record B",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 3,
+          "title": "Record C",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 4,
+          "title": "Record D",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 5,
+          "title": "Record E",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 6,
+          "title": "Record F",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 7,
+          "title": "Record G",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 8,
+          "title": "Record H",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 9,
+          "title": "Record I",
+          "status": "active"
+        }
+      },
+      {
+        "json": {
+          "id": 10,
+          "title": "Record J",
+          "status": "active"
+        }
+      }
+    ]
+  },
+  "versionId": "8c9f3afa-e675-423c-a120-770c7553a8e7",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-12T11:31:53.422Z",
+      "createdAt": "2026-07-12T11:31:53.422Z",
+      "role": "workflow:owner",
+      "workflowId": "SQEePwftX5cKRCeF",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
