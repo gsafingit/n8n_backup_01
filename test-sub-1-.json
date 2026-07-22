@@ -1,0 +1,72 @@
+{
+  "updatedAt": "2026-07-09T11:39:45.929Z",
+  "createdAt": "2026-07-09T11:35:58.571Z",
+  "id": "jmfU4QFtkzpq2SyU",
+  "name": "test sub 1",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a084f234-de43-4c3d-bb1c-43f8bd1f9c68",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "03e27a9c-e40c-489d-8ff4-ed4433399ba8",
+      "name": "q"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "q",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "095b7424-b032-4e3b-b897-8850aa782147",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-07-09T11:35:58.574Z",
+      "createdAt": "2026-07-09T11:35:58.574Z",
+      "role": "workflow:owner",
+      "workflowId": "jmfU4QFtkzpq2SyU",
+      "projectId": "7yVA2UbfXRYAJ8zK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
